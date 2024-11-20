@@ -1,0 +1,45 @@
+{
+    "People": [
+        "Albert Einstein", "Marie Curie", "Leonardo da Vinci", "Cleopatra VII", "Mahatma Gandhi",
+        "Ada Lovelace", "Nikola Tesla", "William Shakespeare", "Vincent van Gogh", "Isaac Newton",
+        "Rosa Parks", "Alexander the Great", "Florence Nightingale", "Confucius", "Ludwig van Beethoven",
+        "Nelson Mandela", "Joan of Arc", "Muhammad Ali", "Frida Kahlo", "Elon Musk", "Malala Yousafzai",
+        "Barack Obama", "Aristotle", "Serena Williams", "Jane Goodall", "Oprah Winfrey", "Carl Sagan",
+        "Simone Biles", "Greta Thunberg", "Usain Bolt"
+    ],
+    "Companies": [
+        "Apple Inc.", "Microsoft", "Toyota Motor Corporation", "Samsung Electronics", "Tesla, Inc.",
+        "IBM", "Sony Corporation", "Amazon", "Google (Alphabet Inc.)", "Facebook (Meta Platforms)",
+        "Netflix", "SpaceX", "Airbus", "Procter & Gamble", "Johnson & Johnson", "Nike, Inc.", "Adidas",
+        "Coca-Cola Company", "Berkshire Hathaway", "Walmart"
+    ],
+    "Towns or Villages": [
+        "Timbuktu", "Machu Picchu", "Hallstatt", "Pompeii", "Giverny", "Ubud", "Banff", 
+        "Chefchaouen", "Lhasa", "Santorini"
+    ],
+    "Works of Art": [
+        "Mona Lisa", "Starry Night", "The Scream", "Girl with a Pearl Earring", "The Persistence of Memory",
+        "Guernica", "David", "The Kiss", "American Gothic", "The Thinker"
+    ],
+    "Educational Institutes": [
+        "Harvard University", "University of Oxford", "Sorbonne University", "Tsinghua University", 
+        "Massachusetts Institute of Technology (MIT)"
+    ],
+    "Laptop Models": [
+        "Apple MacBook Pro", "Dell XPS 13", "HP Spectre x360", "Lenovo ThinkPad X1 Carbon", 
+        "Microsoft Surface Laptop 4"
+    ],
+    "Events": [
+        "World War II", "French Revolution", "Apollo 11 Moon Landing", "Fall of the Berlin Wall", 
+        "COVID-19 Pandemic"
+    ],
+    "Astronomical Objects": [
+        "Milky Way Galaxy", "Andromeda Galaxy", "Betelgeuse", "Halley's Comet", "Jupiter's Moon Europa"
+    ],
+    "Sports": [
+        "Football (Soccer)", "Basketball", "Tennis", "Swimming", "Cricket"
+    ],
+    "Bands": [
+        "The Beatles", "Queen", "Nirvana", "Coldplay", "BTS"
+    ]
+}

@@ -1,0 +1,13 @@
+The list of entities compiled from wikidata consists of these categories:
+30 people
+20 companies
+10 towns or villages
+10 work of art
+5 educational institutes
+5 events
+5 laptop models
+5 astronomical objects
+5 sports
+5 musical bands
+
+Total: 100

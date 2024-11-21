@@ -19,6 +19,8 @@ class GPTKBCRunner:
         
         self.openai_client = OpenAI()
         self.job_description = job_description
+        self.prompter_parser_module = prompter_parser_module
+
         self.tmp_folder = os.getcwd()
         self.wikidata_entities_file_path = os.getcwd() + "/wikidata_entities.json"
         self.in_progress_file_path = os.getcwd() + "/in_progress.json"

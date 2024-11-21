@@ -17,7 +17,7 @@ class GPTKBCRunner:
         if prompter_parser_module is None:
             raise ValueError("Prompter Parser module is not provided")
         
-        self.openai_client = OpenAI(api_key = "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")
+        self.openai_client = OpenAI()
         self.job_description = job_description
         self.tmp_folder = os.getcwd()
         self.wikidata_entities_file_path = os.getcwd() + "/wikidata_entities.json"

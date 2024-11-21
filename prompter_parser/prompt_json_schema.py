@@ -1,8 +1,8 @@
 import json
 from pathlib import Path
 from jinja2 import Environment, FileSystemLoader
-from prompt_parser.abstract_prompt_parser import AbstractPrompterParser
-from  prompt_parser.exceptions import ParsingException
+from prompter_parser.abstract_prompter_parser import AbstractPrompterParser
+from prompter_parser.exceptions import ParsingException
 from loguru import logger
 
 

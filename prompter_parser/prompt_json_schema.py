@@ -17,7 +17,7 @@ class PromptJSONSchema(AbstractPrompterParser):
         folder = path_elicitation.parent
         env = Environment(loader=FileSystemLoader(folder))
         self.template_elicitation = env.get_template(path_elicitation.name)
-        self.get_model_elicitation = gpt_model_elicitation
+        self.gpt_model_elicitation = gpt_model_elicitation
 
     def get_elicitation_prompt(self, subject_name: str) -> dict:
         return json.loads(

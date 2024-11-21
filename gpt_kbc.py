@@ -21,6 +21,10 @@ class GPTKBCRunner:
         self.job_description = job_description
         self.tmp_folder = os.getcwd()
         self.wikidata_entities_file_path = os.getcwd() + "/wikidata_entities.json"
+        self.in_progress_file_path = os.getcwd() + "/in_progress.json"
+        self.completed_file_path = os.getcwd() + "/completed.json"
+        self.result_file_path = os.getcwd() + "/batch_results.jsonl"
+        self.batch_request_file_path = os.getcwd() + "/batch_requests.jsonl"
 
     def get_list_of_subjects(self) -> list[str]:
         """
@@ -36,23 +40,23 @@ class GPTKBCRunner:
 
     def loop(self, subjects_to_expand):
         logger.info("Starting the main loop ...")
-        in_progress_file_path = self.tmp_folder / "in_progress.json"
-        completed_file_path = self.tmp_folder / "completed.json"
+        #in_progress_file_path = self.tmp_folder / "in_progress.json"
+        #completed_file_path = self.tmp_folder / "completed.json"
 
-        if os.path.exists(in_progress_file_path) and os.path.getsize(in_progress_file_path)>0:
+        if os.path.exists(self.in_progress_file_path) and os.path.getsize(self.in_progress_file_path)>0:
             logger.info("...")
             if self.check_batch_status == True:
                 # batch as completed, read the batch
-                with open(completed_file_path, 'r') as f:
+                with open(self.completed_file_path, 'r') as f:
                     data = json.loads(f)
-                    batch_file_id = data.get("batch_file_id", None)
+                    batch_file_id = data.get("batch_id", None)
             
                 self.process_completed_batch(batch_file_id)
             
             else:
                 logger.info("Batch is still bring processed ..")
 
-        elif os.path.exists(in_progress_file_path) == False and os.path.exists(completed_file_path) == False:
+        elif os.path.exists(self.in_progress_file_path) == False and os.path.exists(self.completed_file_path) == False:
             logger.info("Need to submit a new batch")
             self.create_batch(subjects_to_expand)
 
@@ -67,19 +71,19 @@ class GPTKBCRunner:
         status_in_progress = ["created", "validating", "in_progress", "finalizing", "parsing"]
 
         #read the in_progress file ID to get the batch id submitted to openai
-        in_progress_file_path = self.tmp_folder / "in_progress.json"
-        completed_file_path = self.tmp_folder / "completed.json"
+        #in_progress_file_path = self.tmp_folder / "in_progress.json"
+        #completed_file_path = self.tmp_folder / "completed.json"
 
-        if os.path.exists(in_progress_file_path):
-            with open(in_progress_file_path, "r") as f:
+        if os.path.exists(self.in_progress_file_path):
+            with open(self.in_progress_file_path, "r") as f:
                 data = json.loads(f)
             
-            batch_file_id = data.get("batch_file_id", None)
+            batch_file_id = data.get("batch_id", None)
             openai_batch = self.openai_client.batches.retrieve(batch_file_id)
             current_status = openai_batch.status
             if current_status == "completed":
                 #write the batch id to completed.json
-                with open(completed_file_path, "w") as f:
+                with open(self.completed_file_path, "w") as f:
                     f.write(json.dumps(batch_file_id) + "\n")
                     return True
             elif current_status in status_in_progress:
@@ -97,12 +101,13 @@ class GPTKBCRunner:
         output_file_id = openai_batch.output_file_id
         batch_result = self.openai_client.files.content(output_file_id).content
 
-        result_file_path = self.tmp_folder/"batch_results.jsonl"
-        with open(result_file_path, "wb") as f:
+        #result_file_path = self.tmp_folder/"batch_results.jsonl"
+
+        with open(self.result_file_path, "wb") as f:
             f.write(batch_result)
         
         raw_triples = []
-        with open(result_file_path, "r") as f:
+        with open(self.result_file_path, "r") as f:
             for line in f:
                 raw_triples_from_line = []
                 try:
@@ -128,12 +133,12 @@ class GPTKBCRunner:
             req = self.prompter_parser_module.get_elicitation_prompt(subject_name=subject)
             batch_request.append(req)
 
-        with open(self.tmp_folder/"batch_requests.jsonl", "w") as f:
+        with open(self.batch_request_file_path, "w") as f:
             for obj in batch_request:
                 f.write(json.dumps(obj) + "\n")
         
         batch_input_file = self.openai_client.files.create(
-            file=open(self.tmp_folder / "batch_requests.jsonl", "rb"),
+            file=open(self.batch_request_file_path, "rb"),
             purpose="batch"
         )
 
@@ -163,9 +168,9 @@ class GPTKBCRunner:
             raise Exception(
                 f"Failed to create batch file after {max_tries} attempts.")
         
-        data = {"batch_file_id": "your_batch_file_id_here"}
+        data = {"batch_id": openai_batch.id}
 
-        with open(self.tmp_folder / "in_progress.json", "w") as f:
+        with open(self.in_progress_file_path, "w") as f:
             json.dump(data, f)
         
         logger.info("Batch ID recored at in_progress.json")

@@ -1,0 +1,47 @@
+subject,predicate,object,subject_name
+Marie Curie,instanceOf,scientist,Marie Curie
+Marie Curie,instanceOf,physicist,Marie Curie
+Marie Curie,instanceOf,chemist,Marie Curie
+Marie Curie,born,"November 7, 1867",Marie Curie
+Marie Curie,died,"July 4, 1934",Marie Curie
+Marie Curie,knownFor,radioactivity,Marie Curie
+Marie Curie,knownFor,discovery of polonium,Marie Curie
+Marie Curie,knownFor,discovery of radium,Marie Curie
+Marie Curie,awards,Nobel Prize in Physics,Marie Curie
+Marie Curie,awards,Nobel Prize in Chemistry,Marie Curie
+Marie Curie,nationality,Polish,Marie Curie
+Marie Curie,nationality,French,Marie Curie
+Marie Curie,field,radioactivity,Marie Curie
+Marie Curie,field,nuclear physics,Marie Curie
+Marie Curie,field,chemistry,Marie Curie
+Marie Curie,spouse,Pierre Curie,Marie Curie
+Marie Curie,children,Irène Joliot-Curie,Marie Curie
+Marie Curie,children,Ève Curie,Marie Curie
+Marie Curie,education,University of Paris,Marie Curie
+Marie Curie,influenced,Irène Joliot-Curie,Marie Curie
+Marie Curie,influenced,Frederick Joliot-Curie,Marie Curie
+Marie Curie,influenced,Lise Meitner,Marie Curie
+Marie Curie,influenced,James Chadwick,Marie Curie
+Marie Curie,influenced,Enrico Fermi,Marie Curie
+Marie Curie,influenced,Glenn T. Seaborg,Marie Curie
+Marie Curie,placeOfBirth,Warsaw,Marie Curie
+Marie Curie,placeOfDeath,"Passy, Haute-Savoie",Marie Curie
+Marie Curie,knownFor,Curie temperature,Marie Curie
+Marie Curie,knownFor,Curie Institute,Marie Curie
+Marie Curie,knownFor,Curie family,Marie Curie
+Marie Curie,knownFor,Curie process,Marie Curie
+Marie Curie,knownFor,Curie point,Marie Curie
+Marie Curie,affiliation,University of Paris,Marie Curie
+Marie Curie,affiliation,Radium Institute,Marie Curie
+Marie Curie,affiliation,Collège de France,Marie Curie
+Marie Curie,invention,mobile radiography units,Marie Curie
+Marie Curie,invention,radiotherapy,Marie Curie
+Marie Curie,invention,radioactive isotopes,Marie Curie
+Marie Curie,invention,radiological equipment,Marie Curie
+Marie Curie,invention,Curie-Skovskii method,Marie Curie
+Marie Curie,influence,women in science,Marie Curie
+Marie Curie,legacy,pioneering research in radioactivity,Marie Curie
+Marie Curie,legacy,inspiration for future generations,Marie Curie
+Marie Curie,legacy,advancement of medical treatments,Marie Curie
+Marie Curie,legacy,increased awareness of radiation safety,Marie Curie
+Marie Curie,legacy,establishment of research institutions,Marie Curie

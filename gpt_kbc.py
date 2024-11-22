@@ -130,7 +130,7 @@ class GPTKBCRunner:
         """
         try:
             with open(self.csv_file_path, mode = 'w', newline='', encoding = 'utf-8') as csv_file:
-                fieldnames = ['Subject', 'Predicate', 'Object', 'Subject Name']
+                fieldnames = ["subject", "predicate", "object", "subject_name"]
                 writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
                 writer.writeheader()
                 writer.writerows(raw_triples)

@@ -4,6 +4,8 @@ from pathlib import Path
 import os
 import random
 import openai
+import csv 
+
 from loguru import logger
 from openai import OpenAI
 from openai.types import Batch as OpenAIBatch
@@ -27,6 +29,7 @@ class GPTKBCRunner:
         self.completed_file_path = os.getcwd() + "/completed.json"
         self.result_file_path = os.getcwd() + "/batch_results.jsonl"
         self.batch_request_file_path = os.getcwd() + "/batch_requests.jsonl"
+        self.csv_file_path = os.getcwd() + "/wikidata_triples.csv"
 
     def get_list_of_subjects(self) -> list[str]:
         """
@@ -42,16 +45,15 @@ class GPTKBCRunner:
 
     def loop(self, subjects_to_expand):
         logger.info("Starting the main loop ...")
-        #in_progress_file_path = self.tmp_folder / "in_progress.json"
-        #completed_file_path = self.tmp_folder / "completed.json"
-
+        
         if os.path.exists(self.in_progress_file_path) and os.path.getsize(self.in_progress_file_path)>0:
             logger.info("...")
-            if self.check_batch_status == True:
+            if self.check_batch_status() == True:
                 # batch as completed, read the batch
                 with open(self.completed_file_path, 'r') as f:
-                    data = json.loads(f)
-                    batch_file_id = data.get("batch_id", None)
+                    data = json.load(f)
+                    batch_file_id = data
+                    #batch_file_id = data.get("batch_id", None)
             
                 self.process_completed_batch(batch_file_id)
             
@@ -61,6 +63,8 @@ class GPTKBCRunner:
         elif os.path.exists(self.in_progress_file_path) == False and os.path.exists(self.completed_file_path) == False:
             logger.info("Need to submit a new batch")
             self.create_batch(subjects_to_expand)
+        
+        logger.info('The loop has succesfully finished ...')
 
     
     def check_batch_status(self):
@@ -72,17 +76,14 @@ class GPTKBCRunner:
         """
         status_in_progress = ["created", "validating", "in_progress", "finalizing", "parsing"]
 
-        #read the in_progress file ID to get the batch id submitted to openai
-        #in_progress_file_path = self.tmp_folder / "in_progress.json"
-        #completed_file_path = self.tmp_folder / "completed.json"
-
         if os.path.exists(self.in_progress_file_path):
             with open(self.in_progress_file_path, "r") as f:
-                data = json.loads(f)
+                data = json.load(f)
             
             batch_file_id = data.get("batch_id", None)
             openai_batch = self.openai_client.batches.retrieve(batch_file_id)
             current_status = openai_batch.status
+            logger.info(f"Current status of the batch ..{current_status}")
             if current_status == "completed":
                 #write the batch id to completed.json
                 with open(self.completed_file_path, "w") as f:
@@ -103,8 +104,6 @@ class GPTKBCRunner:
         output_file_id = openai_batch.output_file_id
         batch_result = self.openai_client.files.content(output_file_id).content
 
-        #result_file_path = self.tmp_folder/"batch_results.jsonl"
-
         with open(self.result_file_path, "wb") as f:
             f.write(batch_result)
         
@@ -123,6 +122,21 @@ class GPTKBCRunner:
         logger.info(f"Found {len(raw_triples):,} raw triples in the batch results.")
         print("raw_triples", raw_triples)
 
+    
+    def write_triples_to_csv(self, raw_triples):
+        """
+        Write the raw triples to the csv file for further processing
+        """
+        try:
+            with open(self.csv_file_path, mode = 'w', newline='', encoding = 'utf-8') as csv_file:
+                fieldnames = ['Subject', 'Predicate', 'Object', 'Subject Name']
+                writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+                writer.writeheader()
+                writer.writerows(raw_triples)
+                logger.info("Data written to CSV succesfully ...")
+
+        except Exception as e:
+            print("An error occured: {e}")
 
 
     def create_batch(self, subjects_to_expand = list[str], max_tries:int=5):
@@ -152,7 +166,7 @@ class GPTKBCRunner:
                 openai_batch = self.openai_client.batches.create(
                     input_file_id=batch_input_file_id,
                     endpoint="/v1/chat/completions",
-                    completion_window="24h",
+                    completion_window="1h",
                     metadata={
                         "description": self.job_description
                     }

@@ -121,6 +121,7 @@ class GPTKBCRunner:
         
         logger.info(f"Found {len(raw_triples):,} raw triples in the batch results.")
         print("raw_triples", raw_triples)
+        self.write_triples_to_csv(raw_triples)
 
     
     def write_triples_to_csv(self, raw_triples):

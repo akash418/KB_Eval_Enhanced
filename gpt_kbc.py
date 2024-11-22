@@ -167,7 +167,7 @@ class GPTKBCRunner:
                 openai_batch = self.openai_client.batches.create(
                     input_file_id=batch_input_file_id,
                     endpoint="/v1/chat/completions",
-                    completion_window="1h",
+                    completion_window="24h",
                     metadata={
                         "description": self.job_description
                     }

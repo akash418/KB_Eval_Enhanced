@@ -10,7 +10,7 @@ import requests
 from loguru import logger
 import csv
 
-from .request import Request
+from request import Request
 
 class ProcessRequest:
     def __init__(self, model_name, wikidata_triples_file_path, seed):
@@ -33,7 +33,7 @@ class ProcessRequest:
         # this dict just stores results which fall into either of categories (a, b, c, d) --> see content in verify_triples, Request class
         results = {"a":[], "b":[], "c":[], "d":[], "noSnippet": []}
         for each_triple in raw_triples:
-            if len(each_triple['snippet'] > 0):
+            if len(each_triple['snippet']) > 0:
                 each_triple_str = f"({each_triple['subject'].replace('_', ' ')}, {each_triple['predicate'].replace('_', ' ')}, {each_triple['object'].replace('_', ' ')})"
                 print('each_triple_str', each_triple_str)
 
@@ -73,7 +73,7 @@ class ProcessRequest:
             for row in csv_reader:
                 raw_triples.append(row)
         
-        randomized_triples = random.sample(raw_triples, 5)
+        randomized_triples = random.sample(raw_triples, 3)
         return randomized_triples
 
 
@@ -88,7 +88,15 @@ class ProcessRequest:
             each_triple['snippet'] = returned_snippet
             time.sleep(2)
 
-        with open(self.snippet_dir + "" + {self.seed} + ".pkl", "wb") as f:
+        if not os.path.exists(self.snippet_dir):
+            os.makedirs(self.snippet_dir)
+            print(f"Directory created: {self.snippet_dir}")
+        else:
+            print(f"Directory already exists: {self.snippet_dir}")
+
+        file_path = os.path.join(self.snippet_dir, f"{self.seed}.pkl")
+
+        with open(file_path, "wb") as f:
             pickle.dump(raw_triples, f)
         
         return raw_triples

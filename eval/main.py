@@ -1,6 +1,6 @@
 import fire
-from .request import Request
-from .process_request import ProcessRequest
+from request import Request
+from process_request import ProcessRequest
 
 
 def main(

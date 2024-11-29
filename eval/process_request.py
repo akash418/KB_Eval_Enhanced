@@ -63,7 +63,7 @@ class ProcessRequest:
         return results
             
 
-    def fact_verify_wikidata_triples(self):
+    def read_triples_file(self):
         """
         Read the wikidata triples file, get some random ones (if needed) and 
         """

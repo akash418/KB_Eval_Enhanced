@@ -9,3 +9,6 @@ fire
 sqlalchemy
 jinja2
 sparqlwrapper
+tqdm
+pandas
+sentence-transformers

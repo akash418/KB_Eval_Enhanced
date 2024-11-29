@@ -17,7 +17,7 @@ python main.py \
     --gpt_model_elicitation "gpt-4o-mini" \
 ```
 
-Fact Verification: web search snippet generation +  LLM fact verification
+- Fact Verification: web search snippet generation +  LLM fact verification
 
 ```bash
 

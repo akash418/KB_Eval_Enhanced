@@ -1,5 +1,6 @@
 import requests
 from tqdm import tqdm 
+import torch
 from sentence_transformers import SentenceTransformer, util
 
 """
@@ -133,16 +134,17 @@ def get_wikidata_property_label(property_id, language="en"):
         return None
 
 
-def soft_match_triples_with_claims(current_triple, wikidata_claims, threshold_score = 0.7):
+def soft_match_triples_with_claims(current_triple, wikidata_claims, threshold_score = 0.8):
     """
     Matches a list of triples with Wikidata claims using semantic similarity.
     If the asked triple matches if any of the wikidata claims then it can be considered plausible
     return True else False
 
     """
-    model = SentenceTransformer('all-MiniLM-L6-v2')
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu") 
+    model = SentenceTransformer('all-MiniLM-L6-v2').to(device)
     triple_texts = [f"{current_triple['subject']} {current_triple['predicate']} {current_triple['object']}"]
-    triple_embeddings = model.encode(triple_texts, convert_to_tensor=True)
+    triple_embeddings = model.encode(triple_texts, convert_to_tensor=True, device = device)
 
     # variable for storing all wikidata claims converted to triple format
     all_triple_wikidata_claims = []
@@ -158,12 +160,14 @@ def soft_match_triples_with_claims(current_triple, wikidata_claims, threshold_sc
                     all_triple_wikidata_claims.append(curr_wikidata_claim_string)
     
 
-    claim_embedding = model.encode(all_triple_wikidata_claims, convert_to_tensor=True)
+    claim_embedding = model.encode(all_triple_wikidata_claims, convert_to_tensor=True, device = device)
     similarities = util.pytorch_cos_sim(triple_embeddings, claim_embedding)
 
-    for idx, score in enumerate(similarities):
-        if score > threshold_score:
-            return True
+    indices = (similarities > threshold_score).nonzero(as_tuple=True)
+    values = similarities[indices]
+
+    if len(values) > 0:
+        return True
     
     return False
 

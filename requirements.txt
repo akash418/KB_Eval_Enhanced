@@ -12,3 +12,4 @@ sparqlwrapper
 tqdm
 pandas
 sentence-transformers
+torch

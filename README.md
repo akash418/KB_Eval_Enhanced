@@ -6,7 +6,7 @@ Please use **Python 3.11**. You can install the required packages by running:
 pip install -r requirements.txt
 ```
 
-List of entities handpicked from Wikidata - wikidata_entities.json
+List of entities handpicked from Wikidata - ```wikidata_entities.json```
 
 Steps to use:
 - Knowledge elicitation from wikidata entities using the prompt in templates folder, executable example
@@ -16,6 +16,8 @@ python main.py \
     --template_path_elicitation templates/prompts/prompt_elicitation.json.jinja \
     --gpt_model_elicitation "gpt-4o-mini" \
 ```
+
+running this command will save triples in ```wikidata_triples.csv```
 
 - Fact Verification: (web search snippet generation +  LLM fact verification) or soft matching from wikidata
 

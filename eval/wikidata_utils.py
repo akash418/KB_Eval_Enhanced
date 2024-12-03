@@ -46,7 +46,7 @@ def get_wikidata_entity_id(entity_name, language = 'en'):
 
 def fetch_wikidata_claims(entity_id):
     """
-    Fetches claims for a Wikidata entity using its ID.
+    Fetches properties for claims given a Wikidata entity using its ID.
     """
     url = f"https://www.wikidata.org/wiki/Special:EntityData/{entity_id}.json"
     response = requests.get(url)
@@ -163,6 +163,7 @@ def soft_match_triples_with_claims(current_triple, wikidata_claims, threshold_sc
     claim_embedding = model.encode(all_triple_wikidata_claims, convert_to_tensor=True, device = device)
     similarities = util.pytorch_cos_sim(triple_embeddings, claim_embedding)
 
+    # record indices for matching triples semantically
     indices = (similarities > threshold_score).nonzero(as_tuple=True)
     values = similarities[indices]
 

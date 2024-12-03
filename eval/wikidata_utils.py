@@ -179,15 +179,15 @@ def soft_match_utils(raw_triples):
     """ 
 
     # list recording plausible claims 
-    plausible_claims = []
+    plausible_triples = []
 
     for each_triple in raw_triples:
         subject_entity_id = get_wikidata_entity_id(each_triple['subject'])
         wikidata_collection_claims = fetch_wikidata_claims(subject_entity_id)
         if soft_match_triples_with_claims(each_triple, wikidata_collection_claims) == True:
-            plausible_claims.append(each_triple)
+            plausible_triples.append(each_triple)
     
 
-    print(f"Collection of plausible triples: {plausible_claims}")
-    return plausible_claims
+    print(f"Collection of plausible triples: {plausible_triples}")
+    return plausible_triples
 

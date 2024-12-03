@@ -23,8 +23,8 @@ def main(
         print("Output dictionary recording triple verification ... ", output_dict)
     
     if verification_method == "wikidata":
-        plausible_claims = soft_match_utils(ret_triples)
-        print(f"Fraction of triples plausible: {len(plausible_claims)/len(ret_triples)}")
+        plausible_triples = soft_match_utils(ret_triples)
+        print(f"Fraction of triples plausible: {len(plausible_triples)/len(ret_triples)}")
 
 
 

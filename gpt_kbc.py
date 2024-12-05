@@ -40,8 +40,9 @@ class GPTKBCRunner:
 
         all_values = [item for key, values in json_content.items() for item in values]
         random_entities = random.sample(all_values, 3)
+
         # for now just sample 3 entities
-        return random_entities
+        return all_values
 
     def loop(self, subjects_to_expand):
         logger.info("Starting the main loop ...")

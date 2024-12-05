@@ -43,6 +43,16 @@ def get_wikidata_entity_id(entity_name, language = 'en'):
         return None
 
 
+def sanity_check_entity(entity_name, language = 'en'):
+    """
+    Given an entity string check if it exists on wikidata
+    """
+
+    if get_wikidata_entity_id(entity_name)!= None:
+        return True
+    else:
+        return False
+
 
 def fetch_wikidata_claims(entity_id):
     """

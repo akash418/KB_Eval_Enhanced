@@ -19,8 +19,10 @@ class ProcessRequest:
         # directory to store the snippets downloaded from the search query
         self.snippet_dir = os.getcwd() + "snippets/"
         self.wikidata_triples_file_path = wikidata_triples_file_path
+        self.wikidata_entities_file_path = os.getcwd() + "/wikidata_entities.json"
         self.seed = seed
         self.model_name = model_name
+
 
     def verify_triples(self, raw_triples):
 

@@ -1,45 +1,45 @@
 {
     "People": [
-        "Albert Einstein", "Marie Curie", "Leonardo da Vinci", "Cleopatra VII", "Mahatma Gandhi",
-        "Ada Lovelace", "Nikola Tesla", "William Shakespeare", "Vincent van Gogh", "Isaac Newton",
-        "Rosa Parks", "Alexander the Great", "Florence Nightingale", "Confucius", "Ludwig van Beethoven",
-        "Nelson Mandela", "Joan of Arc", "Muhammad Ali", "Frida Kahlo", "Elon Musk", "Malala Yousafzai",
-        "Barack Obama", "Aristotle", "Serena Williams", "Jane Goodall", "Oprah Winfrey", "Carl Sagan",
-        "Simone Biles", "Greta Thunberg", "Usain Bolt"
+        "Gerhard Weikum", "Irène Joliot-Curie", "Joseph Beuys", "Zenobia", "Bal Gangadhar Tilak",
+        "Jasprit Bumrah", "Galileo Ferraris", "Heinrich Heine", "Paula Modersohn-Becker", "Blaise Pascal",
+        "Fannie Lou Hamer", "Harald Hardrada", "Mary Seacole", "Mencius", "Joseph Haydn",
+        "Steve Biko", "Hildegard of Bingen", "Max Schmeling", "Leonora Carrington", "Konrad Zuse", 
+        "Ziauddin Yousafzai", "Kwame Nkrumah", "Empedocles", "Steffi Graf", "Birutė Galdikas", 
+        "Toni Morrison", "Alexander von Humboldt", "Kurt Gödel", "Vandana Shiva", "Paracelsus"
     ],
     "Companies": [
-        "Apple Inc.", "Microsoft", "Toyota Motor Corporation", "Samsung Electronics", "Tesla, Inc.",
-        "IBM", "Sony Corporation", "Amazon", "Google (Alphabet Inc.)", "Facebook (Meta Platforms)",
-        "Netflix", "SpaceX", "Airbus", "Procter & Gamble", "Johnson & Johnson", "Nike, Inc.", "Adidas",
-        "Coca-Cola Company", "Berkshire Hathaway", "Walmart"
+        "HCL Technologies", "SAP SE", "Subaru Corporation", "Hyundai Mobis", "Lucid Motors",
+        "Fujitsu", "LG Display", "Rakuten", "Palantir Technologies", "ByteDance",
+        "Paramount Global", "Rocket Lab", "Dassault Aviation", "Colgate-Palmolive", 
+        "Novo Nordisk", "Puma SE", "Asics Corporation", "PepsiCo", "SoftBank Group", "Carrefour"
     ],
     "Towns or Villages": [
-        "Timbuktu", "Machu Picchu", "Hallstatt", "Pompeii", "Giverny", "Ubud", "Banff", 
-        "Chefchaouen", "Lhasa", "Santorini"
+        "Zermatt", "Oia", "Soglio", "Český Krumlov", "Riquewihr", "Abisko", "Giethoorn", 
+        "Shirakawa-go", "Patmos", "Eze"
     ],
     "Works of Art": [
-        "Mona Lisa", "Starry Night", "The Scream", "Girl with a Pearl Earring", "The Persistence of Memory",
-        "Guernica", "David", "The Kiss", "American Gothic", "The Thinker"
+        "The Hay Wain", "Water Lilies", "Composition VII", "The Arnolfini Portrait", "The Garden of Earthly Delights",
+        "The Burial of the Count of Orgaz", "The Ecstasy of Saint Teresa", "Sunflowers", "Las Meninas", "The Gleaners"
     ],
     "Educational Institutes": [
-        "Harvard University", "University of Oxford", "Sorbonne University", "Tsinghua University", 
-        "Massachusetts Institute of Technology (MIT)"
+        "RWTH Aachen University", "University of Freiburg", "Ludwig Maximilian University of Munich", 
+        "Karlsruhe Institute of Technology", "University of Tokyo"
     ],
     "Laptop Models": [
-        "Apple MacBook Pro", "Dell XPS 13", "HP Spectre x360", "Lenovo ThinkPad X1 Carbon", 
-        "Microsoft Surface Laptop 4"
+        "Asus ZenBook Duo", "Acer Swift 3", "Samsung Galaxy Book", "Razer Blade Stealth", 
+        "LG Gram"
     ],
     "Events": [
-        "World War II", "French Revolution", "Apollo 11 Moon Landing", "Fall of the Berlin Wall", 
-        "COVID-19 Pandemic"
+        "Battle of Stalingrad", "Meiji Restoration", "Sputnik 1 Launch", "Partition of India", 
+        "Spanish Flu Pandemic"
     ],
     "Astronomical Objects": [
-        "Milky Way Galaxy", "Andromeda Galaxy", "Betelgeuse", "Halley's Comet", "Jupiter's Moon Europa"
+        "Triangulum Galaxy", "Magellanic Clouds", "Rigel", "Shoemaker-Levy 9", "Titan"
     ],
     "Sports": [
-        "Football (Soccer)", "Basketball", "Tennis", "Swimming", "Cricket"
+        "Badminton", "Table Tennis", "Hockey", "Water Polo", "Cricket"
     ],
     "Bands": [
-        "The Beatles", "Queen", "Nirvana", "Coldplay", "BTS"
+        "Kraftwerk", "The Velvet Underground", "Pixies", "Sigur Rós", "Arcade Fire"
     ]
 }

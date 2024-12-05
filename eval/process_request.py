@@ -10,7 +10,7 @@ import requests
 from loguru import logger
 import csv
 
-from request import Request
+from eval.request import Request
 
 class ProcessRequest:
     def __init__(self, model_name, wikidata_triples_file_path, seed):

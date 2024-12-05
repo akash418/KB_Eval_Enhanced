@@ -1,7 +1,7 @@
 import fire
-from request import Request
-from process_request import ProcessRequest
-from wikidata_utils import *
+from eval.request import Request
+from eval.process_request import ProcessRequest
+from eval.wikidata_utils import *
 
 
 def main(

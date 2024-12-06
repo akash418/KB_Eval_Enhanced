@@ -110,18 +110,18 @@ class GPTKBCRunner:
         
         raw_triples = []
         with open(self.result_file_path, "r") as f:
-            for line in f:
-                raw_triples_from_line = []
+            for line_number, line in enumerate(f, start=1):
                 try:
                     raw_triples_from_line = self.prompter_parser_module.parse_elicitation_response(line)
-                
+                    raw_triples.extend(raw_triples_from_line)
                 except json.JSONDecodeError:
-                    logger.error(f"Failed to parse OpenAI response: {line.strip()}")
-                
-                raw_triples.extend(raw_triples_from_line)
-        
+                    logger.error(f"JSONDecodeError at line {line_number}: {line.strip()}")
+                except Exception as e:
+                    logger.error(f"Unexpected error while parsing line {line_number}: {line.strip()} | Error: {e}")
+    
         logger.info(f"Found {len(raw_triples):,} raw triples in the batch results.")
         print("raw_triples", raw_triples)
+
         self.write_triples_to_csv(raw_triples)
 
     

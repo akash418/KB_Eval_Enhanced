@@ -13,3 +13,4 @@ tqdm
 pandas
 sentence-transformers
 torch
+httpx==0.27.2

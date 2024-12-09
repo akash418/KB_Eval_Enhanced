@@ -75,8 +75,16 @@ class ProcessRequest:
             for row in csv_reader:
                 raw_triples.append(row)
         
-        randomized_triples = random.sample(raw_triples, 3)
-        return randomized_triples
+        #randomized_triples = random.sample(raw_triples, 3)
+        return raw_triples
+    
+    def get_triples_statistics(self, raw_triples):
+        """
+        Read the wikidata triples file and get some basic stastics
+        """
+        
+        unique_subjects = set(entry["subject"] for entry in raw_triples)
+        print("Unique Subjects:", unique_subjects)
 
 
     def query_snippets(self, raw_triples):

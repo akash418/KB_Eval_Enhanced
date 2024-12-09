@@ -76,8 +76,8 @@ class ProcessRequest:
             for row in csv_reader:
                 raw_triples.append(row)
         
-        #randomized_triples = random.sample(raw_triples, 3)
-        return raw_triples
+        randomized_triples = random.sample(raw_triples, 25)
+        return randomized_triples
     
     def get_triples_statistics(self, raw_triples):
         """
@@ -144,18 +144,18 @@ class ProcessRequest:
         return snippets
 
 
-def compute_wikidata_precision(self, raw_triples):
-    """
-    Approach: Iterate over all triples, get wikidata facts and ask LLM as judge if model generated
-    triples entail or are plausible
-    """
-    request = Request(self.model_name)
+    def compute_wikidata_precision(self, raw_triples):
+        """
+        Approach: Iterate over all triples, get wikidata facts and ask LLM as judge if model generated
+        triples entail or are plausible
+        """
+        request = Request(self.model_name)
 
-    for each_triple in raw_triples:
-        curr_wikidata_id = get_wikidata_entity_id(each_triple['subject'])
-        wikidata_claims = fetch_wikidata_claims(get_wikidata_entity_id(curr_wikidata_id))
-        all_triples_wikidata = convert_wikidata_claims_to_triples(wikidata_claims, each_triple['subject'])
-        all_triples_wikidata_str = result = ", ".join(all_triples_wikidata)
-        each_triple_str = f"({each_triple['subject'].replace('_', ' ')}, {each_triple['predicate'].replace('_', ' ')}, {each_triple['object'].replace('_', ' ')})"
-        output = request.verify_triple_lm_wikidata(each_triple_str, all_triples_wikidata_str)
-        print("output", output)
+        for each_triple in raw_triples:
+            subject_entity_id = get_wikidata_entity_id(each_triple['subject'])
+            wikidata_claims = fetch_wikidata_claims(subject_entity_id)
+            all_triples_wikidata = convert_wikidata_claims_to_triples(wikidata_claims, each_triple['subject'])
+            all_triples_wikidata_str = result = ", ".join(all_triples_wikidata)
+            each_triple_str = f"({each_triple['subject'].replace('_', ' ')}, {each_triple['predicate'].replace('_', ' ')}, {each_triple['object'].replace('_', ' ')})"
+            output = request.verify_triple_lm_wikidata(each_triple_str, all_triples_wikidata_str)
+            print("output", output)

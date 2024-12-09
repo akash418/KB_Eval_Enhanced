@@ -10,7 +10,8 @@ import requests
 from loguru import logger
 import csv
 
-from eval.request import Request
+from request import Request
+from wikidata_utils import *
 
 class ProcessRequest:
     def __init__(self, model_name, wikidata_triples_file_path, seed):
@@ -37,7 +38,7 @@ class ProcessRequest:
         for each_triple in raw_triples:
             if len(each_triple['snippet']) > 0:
                 each_triple_str = f"({each_triple['subject'].replace('_', ' ')}, {each_triple['predicate'].replace('_', ' ')}, {each_triple['object'].replace('_', ' ')})"
-                print('each_triple_str', each_triple_str)
+                #print('each_triple_str', each_triple_str)
 
                 snippet_str = ""
                 for each_snippet in each_triple['snippet']:
@@ -82,7 +83,7 @@ class ProcessRequest:
         """
         Read the wikidata triples file and get some basic stastics
         """
-        
+
         unique_subjects = set(entry["subject"] for entry in raw_triples)
         print("Unique Subjects:", unique_subjects)
 
@@ -141,3 +142,20 @@ class ProcessRequest:
             logger.info(f"parsing error ... {data}")
         
         return snippets
+
+
+def compute_wikidata_precision(self, raw_triples):
+    """
+    Approach: Iterate over all triples, get wikidata facts and ask LLM as judge if model generated
+    triples entail or are plausible
+    """
+    request = Request(self.model_name)
+
+    for each_triple in raw_triples:
+        curr_wikidata_id = get_wikidata_entity_id(each_triple['subject'])
+        wikidata_claims = fetch_wikidata_claims(get_wikidata_entity_id(curr_wikidata_id))
+        all_triples_wikidata = convert_wikidata_claims_to_triples(wikidata_claims, each_triple['subject'])
+        all_triples_wikidata_str = result = ", ".join(all_triples_wikidata)
+        each_triple_str = f"({each_triple['subject'].replace('_', ' ')}, {each_triple['predicate'].replace('_', ' ')}, {each_triple['object'].replace('_', ' ')})"
+        output = request.verify_triple_lm_wikidata(each_triple_str, all_triples_wikidata_str)
+        print("output", output)

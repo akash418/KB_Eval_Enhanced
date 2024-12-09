@@ -1,7 +1,7 @@
 import fire
-from eval.request import Request
-from eval.process_request import ProcessRequest
-from eval.wikidata_utils import *
+from request import Request
+from process_request import ProcessRequest
+from wikidata_utils import *
 
 
 def main(
@@ -24,11 +24,12 @@ def main(
         output_dict = process_request.verify_triples(ret_triples_with_snippet)
         print("Output dictionary recording triple verification ... ", output_dict)
     
-    if verification_method == "wikidata":
-        plausible_triples = soft_match_utils(ret_triples)
-        print(f"Fraction of triples plausible: {len(plausible_triples)/len(ret_triples)}")
-    
     """
+    if verification_method == "wikidata":
+        #plausible_triples = soft_match_utils(ret_triples)
+        #print(f"Fraction of triples plausible: {len(plausible_triples)/len(ret_triples)}")
+        process_request.compute_precision(ret_triples)
+    
 
 
 

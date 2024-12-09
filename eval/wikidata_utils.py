@@ -144,6 +144,24 @@ def get_wikidata_property_label(property_id, language="en"):
         return None
 
 
+def convert_wikidata_claims_to_triples(wikidata_claims, current_subject):
+    all_triple_wikidata_claims = []
+    for prop, values in tqdm(wikidata_claims.items(), desc = "Matching triples"):
+        for value in values:
+            if type(value) == dict:
+                prop_label = get_wikidata_property_label(prop)
+                if 'id' in value:
+                    referred_entity = get_wikidata_entity_name(value['id'])
+                    curr_wikidata_claim_triple = [current_subject, prop_label, referred_entity]
+                    #curr_wikidata_claim_string = f"{current_subject} {prop_label} {referred_entity}"
+                    curr_wikidata_claim_string = f"({current_subject}, {prop_label}, {referred_entity})"
+                    all_triple_wikidata_claims.append(curr_wikidata_claim_string)
+
+    
+    return all_triple_wikidata_claims
+
+
+
 def soft_match_triples_with_claims(current_triple, wikidata_claims, threshold_score = 0.8):
     """
     Matches a list of triples with Wikidata claims using semantic similarity.

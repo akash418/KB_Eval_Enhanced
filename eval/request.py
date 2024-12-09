@@ -1,4 +1,5 @@
 from openai import OpenAI
+import json
 
 class Request:
     def __init__(self, model_name: str = "gpt-4o-mini", max_tokens = 3000):
@@ -45,18 +46,22 @@ class Request:
 
         triple_prompt_str = f"Statement to verify: {triple}."
         wikidata_prompt_str = f"List of triples to verify from :{str(wikidata_triples)}"
-        response = self.client.chat.completions.create(
-            messages=[
+        messages = [
                 {"role": "user",
                     "content": "Can the given RDF be inferred from the given list of triples? \
                                 Please choose the correct option based on your answer and return only a or b or c or d: \
-                                a) The RDF statement is true according to the snippet.\
-                                b) The RDF statement is plausible according to the snippet. \
-                                c) The RDF statement is implausible according to the snippet. \
-                                d) The RDF statement is false according to the snippet."},
+                                a) The RDF statement is true according to the triples.\
+                                b) The RDF statement is plausible according to the triples. \
+                                c) The RDF statement is implausible according to the triples. \
+                                d) The RDF statement is false according to the triples."},
                 {"role": "user", "content": triple_prompt_str},
                 {"role": "user", "content": wikidata_prompt_str},
-            ],
+            ]
+
+        print(json.dumps(messages, indent=4))
+         
+        response = self.client.chat.completions.create(
+            messages = messages,
             model = self.model_name,
             max_tokens = self.max_tokens,
             temperature=0.0,

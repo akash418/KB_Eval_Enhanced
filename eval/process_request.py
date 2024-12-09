@@ -76,7 +76,7 @@ class ProcessRequest:
             for row in csv_reader:
                 raw_triples.append(row)
         
-        randomized_triples = random.sample(raw_triples, 25)
+        randomized_triples = random.sample(raw_triples, 10)
         return randomized_triples
     
     def get_triples_statistics(self, raw_triples):

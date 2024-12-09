@@ -183,9 +183,10 @@ def soft_match_triples_with_claims(current_triple, wikidata_claims, threshold_sc
                 prop_label = get_wikidata_property_label(prop)
                 if 'id' in value:
                     referred_entity = get_wikidata_entity_name(value['id'])
-                    curr_wikidata_claim_triple = [current_triple['subject'], prop_label, referred_entity]
-                    curr_wikidata_claim_string = f"{current_triple['subject']} {prop_label} {referred_entity}"
-                    all_triple_wikidata_claims.append(curr_wikidata_claim_string)
+                    if prop_label!=None and referred_entity!=None:
+                        curr_wikidata_claim_triple = [current_triple['subject'], prop_label, referred_entity]
+                        curr_wikidata_claim_string = f"{current_triple['subject']} {prop_label} {referred_entity}"
+                        all_triple_wikidata_claims.append(curr_wikidata_claim_string)
     
 
     claim_embedding = model.encode(all_triple_wikidata_claims, convert_to_tensor=True, device = device)

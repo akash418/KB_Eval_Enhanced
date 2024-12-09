@@ -155,7 +155,7 @@ class ProcessRequest:
             subject_entity_id = get_wikidata_entity_id(each_triple['subject'])
             wikidata_claims = fetch_wikidata_claims(subject_entity_id)
             all_triples_wikidata = convert_wikidata_claims_to_triples(wikidata_claims, each_triple['subject'])
-            all_triples_wikidata_str = result = ", ".join(all_triples_wikidata)
+            all_triples_wikidata_str = ", ".join(all_triples_wikidata)
             each_triple_str = f"({each_triple['subject'].replace('_', ' ')}, {each_triple['predicate'].replace('_', ' ')}, {each_triple['object'].replace('_', ' ')})"
             output = request.verify_triple_lm_wikidata(each_triple_str, all_triples_wikidata_str)
             print("output", output)

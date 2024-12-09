@@ -152,10 +152,11 @@ def convert_wikidata_claims_to_triples(wikidata_claims, current_subject):
                 prop_label = get_wikidata_property_label(prop)
                 if 'id' in value:
                     referred_entity = get_wikidata_entity_name(value['id'])
-                    curr_wikidata_claim_triple = [current_subject, prop_label, referred_entity]
-                    #curr_wikidata_claim_string = f"{current_subject} {prop_label} {referred_entity}"
-                    curr_wikidata_claim_string = f"({current_subject}, {prop_label}, {referred_entity})"
-                    all_triple_wikidata_claims.append(curr_wikidata_claim_string)
+                    if prop_label!=None and referred_entity!=None:
+                        curr_wikidata_claim_triple = [current_subject, prop_label, referred_entity]
+                        #curr_wikidata_claim_string = f"{current_subject} {prop_label} {referred_entity}"
+                        curr_wikidata_claim_string = f"({current_subject}, {prop_label}, {referred_entity})"
+                        all_triple_wikidata_claims.append(curr_wikidata_claim_string)
 
     
     return all_triple_wikidata_claims

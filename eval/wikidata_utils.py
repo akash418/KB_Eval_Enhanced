@@ -145,7 +145,7 @@ def get_wikidata_property_label(property_id, language="en"):
         return None
 
 
-def convert_wikidata_claims_to_triples(wikidata_claims, current_subject):
+def convert_wikidata_claims_to_triples(wikidata_claims, current_subject, exp_output_type = 'str'):
     all_triple_wikidata_claims = []
     for prop, values in tqdm(wikidata_claims.items(), desc = "Matching triples"):
         for value in values:
@@ -154,10 +154,13 @@ def convert_wikidata_claims_to_triples(wikidata_claims, current_subject):
                 if 'id' in value:
                     referred_entity = get_wikidata_entity_name(value['id'])
                     if prop_label!=None and referred_entity!=None:
-                        curr_wikidata_claim_triple = [current_subject, prop_label, referred_entity]
-                        #curr_wikidata_claim_string = f"{current_subject} {prop_label} {referred_entity}"
+                        #curr_wikidata_claim_triple = [current_subject, prop_label, referred_entity]
+                        curr_wikidata_claim_triple = {'subject': current_subject, 'predicate': prop_label, 'object': referred_entity}
                         curr_wikidata_claim_string = f"({current_subject}, {prop_label}, {referred_entity})"
-                        all_triple_wikidata_claims.append(curr_wikidata_claim_string)
+                        if exp_output_type == 'str':
+                            all_triple_wikidata_claims.append(curr_wikidata_claim_string)
+                        else:
+                            all_triple_wikidata_claims.append(curr_wikidata_claim_triple)
 
     
     return all_triple_wikidata_claims

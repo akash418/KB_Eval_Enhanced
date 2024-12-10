@@ -36,7 +36,7 @@ class Request:
         return response.choices[0].message.content
     
 
-    def verify_triple_lm_wikidata(self, triple, wikidata_triples):
+    def verify_triple_lm_wikidata(self, triple, gold_triples):
         """
 
         Get the facts and wikidata gold triple and ask LLM as a judge if it the fact 
@@ -45,7 +45,7 @@ class Request:
         """
 
         triple_prompt_str = f"Statement to verify: {triple}."
-        wikidata_prompt_str = f"List of triples to verify from :{str(wikidata_triples)}"
+        gold_prompt_str = f"List of triples to verify from :{str(gold_triples)}"
         messages = [
                 {"role": "user",
                     "content": "Can the given RDF be inferred from the given list of triples? \
@@ -55,10 +55,10 @@ class Request:
                                 c) The RDF statement is implausible according to the triples. \
                                 d) The RDF statement is false according to the triples."},
                 {"role": "user", "content": triple_prompt_str},
-                {"role": "user", "content": wikidata_prompt_str},
+                {"role": "user", "content": gold_prompt_str},
             ]
 
-        print(json.dumps(messages, indent=4))
+        #print(json.dumps(messages, indent=4))
          
         response = self.client.chat.completions.create(
             messages = messages,

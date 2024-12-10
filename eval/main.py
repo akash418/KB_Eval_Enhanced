@@ -28,7 +28,8 @@ def main(
     if verification_method == "wikidata":
         #plausible_triples = soft_match_utils(ret_triples)
         #print(f"Fraction of triples plausible: {len(plausible_triples)/len(ret_triples)}")
-        process_request.compute_wikidata_precision(ret_triples)
+        #process_request.compute_wikidata_precision(ret_triples)
+        process_request.compute_wikidata_recall(ret_triples)
     
 
 

@@ -154,8 +154,8 @@ class ProcessRequest:
 
     def compute_wikidata_precision(self, raw_triples):
         """
-        Approach: Iterate over all triples, get wikidata facts and ask LLM as judge if model generated
-        triples entail or are plausible
+        Approach: Iterate over all triples, get wikidata triples and ask LLM as judge if model generated
+        triples entail or are plausible given wikidata triples
         """
         request = Request(self.model_name)
         results = {"a":[], "b":[], "c":[], "d":[]}
@@ -178,3 +178,68 @@ class ProcessRequest:
         print("Fraction of triples implausble", len(results['c'])/len(raw_triples))
         print("Fraction of triples false", len(results['d'])/len(raw_triples))
         print(results)
+
+    def subject_based_lookup(self, current_subject, raw_triples):
+
+        """
+        Select all the triples for a given subject from the list of raw triples
+        """
+        subject_list_triple = []
+        for each_triple in raw_triples:
+            if each_triple['subject'] == current_subject:
+                subject_list_triple.append(each_triple)
+
+        
+        return subject_list_triple
+
+
+    def compute_wikidata_recall(self, raw_triples):
+        """
+        Approach: Iterate over all wikidata generated triples for entities and ask LLM as a judge if wikidata generated
+        triples entail or plausible given model generated triples
+        """
+        fact_count = dict()
+        request = Request(self.model_name)
+        results = {"a":[], "b":[], "c":[], "d":[]}
+
+        # dict for recording wikidata facts per subject
+        wikidata_facts_per_subject = dict()
+
+        for each_triple in raw_triples:
+            if each_triple['subject'] in fact_count:
+                fact_count[each_triple['subject']]+=1
+            else:
+                fact_count[each_triple['subject']] = 1
+                wikidata_claims = fetch_wikidata_claims(fact_count[each_triple['subject']])
+                wikidata_triples = convert_wikidata_claims_to_triples(wikidata_claims, each_triple['subject'], 'dict')
+                wikidata_facts_per_subject[each_triple['subject']] = wikidata_triples
+        
+
+        print('Yield ...')
+        total_facts = sum(len(v) for v in fact_count.values())
+        num_subjects = len(fact_count)
+        print(f"Average count of facts per subject in the sample set: {total_facts/num_subjects}")
+
+        sample_size = 10
+        all_wikidata_facts = [item for value_list in wikidata_facts_per_subject.values() for item in value_list]
+        sampled_wikidata_facts = random.sample(all_wikidata_facts, sample_size)
+
+        for each_wikidata_fact in sampled_wikidata_facts:
+            subject_based_facts = self.subject_based_lookup(each_wikidata_fact['subject'], raw_triples)
+            subject_based_facts_str = ", ".join(subject_based_facts)
+            each_triple_str = f"{each_wikidata_fact['subject']} {each_wikidata_fact['predicate']} {each_wikidata_fact['object']}"
+            output = request.verify_triple_lm_wikidata(each_triple_str, subject_based_facts_str)
+            results = self.parse_lm_output(each_triple_str, results, output)
+
+
+        print("Recall results ....")
+        print("Total # triples", len(sampled_wikidata_facts))
+        print("Fraction of triples true", len(results['a'])/len(sampled_wikidata_facts))
+        print("Fraction of triples plausible", len(results['b'])/len(sampled_wikidata_facts))    
+        print("Fraction of triples implausble", len(results['c'])/len(sampled_wikidata_facts))
+        print("Fraction of triples false", len(results['d'])/len(sampled_wikidata_facts))
+        print(results)
+
+
+
+        

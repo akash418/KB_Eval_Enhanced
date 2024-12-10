@@ -46,18 +46,8 @@ class ProcessRequest:
                     snippet_str += " | "
                 
                 output = request.verify_triple_language_model(each_triple_str, snippet_str)
-                print('output ...', output)
-
-                if output.startswith("a"):
-                    results['a'].append(each_triple)
-                elif output.startswith("b"):
-                    results['b'].append(each_triple)
-                elif output.startswith("c"):
-                    results['c'].append(each_triple)
-                elif output.startswith("d"):
-                    results['d'].append(each_triple)
-                else:
-                    logger.info('Results fall into some other category ...')
+                #print('output ...', output)
+                results = self.parse_lm_output(each_triple, results, output)
             
             else:
                 results['noSnippet'].append(each_triple)
@@ -65,6 +55,25 @@ class ProcessRequest:
 
         return results
             
+
+    def parse_lm_output(self, current_triple, results, output):
+        """
+        Parse the lm output to decide, true, plausible, false for the current triple
+        """
+
+        if output.startswith("a"):
+            results['a'].append(current_triple)
+        elif output.startswith("b"):
+            results['b'].append(current_triple)
+        elif output.startswith("c"):
+            results['c'].append(current_triple)
+        elif output.startswith("d"):
+            results['d'].append(current_triple)
+        else:
+            logger.info('Results fall into some other category ...')
+        
+        return results
+    
 
     def read_triples_file(self):
         """
@@ -150,6 +159,7 @@ class ProcessRequest:
         triples entail or are plausible
         """
         request = Request(self.model_name)
+        results = results = {"a":[], "b":[], "c":[], "d":[]}
 
         for each_triple in raw_triples:
             subject_entity_id = get_wikidata_entity_id(each_triple['subject'])
@@ -158,4 +168,9 @@ class ProcessRequest:
             all_triples_wikidata_str = ", ".join(all_triples_wikidata)
             each_triple_str = f"({each_triple['subject'].replace('_', ' ')}, {each_triple['predicate'].replace('_', ' ')}, {each_triple['object'].replace('_', ' ')})"
             output = request.verify_triple_lm_wikidata(each_triple_str, all_triples_wikidata_str)
-            print("output", output)
+            #print("output", output)
+            results = self.parse_lm_output(results, output, each_triple_str)
+        
+
+        print("Precision results ....")
+        print(results)

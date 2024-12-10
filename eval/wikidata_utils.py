@@ -2,6 +2,7 @@ import requests
 from tqdm import tqdm 
 import torch
 from sentence_transformers import SentenceTransformer, util
+from loguru import logger
 
 """
 py file containing helper methods for fetching data from wikidata for entities
@@ -36,10 +37,10 @@ def get_wikidata_entity_id(entity_name, language = 'en'):
             # Return the first matching entity ID
             return results[0].get("id")
         else:
-            print(f"No matches found for entity: {entity_name}")
+            logger.info(f"No matches found for entity: {entity_name}")
             return None
     else:
-        print(f"Failed to fetch data. HTTP Status Code: {response.status_code}")
+        logger.info(f"Failed to fetch data. HTTP Status Code: {response.status_code}")
         return None
 
 
@@ -100,10 +101,10 @@ def get_wikidata_entity_name(entity_id, language="en"):
             labels = entities[entity_id].get("labels", {})
             if language in labels:
                 return labels[language].get("value")
-        print(f"No label found for entity ID: {entity_id}")
+        logger.info(f"No label found for entity ID: {entity_id}")
         return None
     else:
-        print(f"Failed to fetch data. HTTP Status Code: {response.status_code}")
+        logger.info(f"Failed to fetch data. HTTP Status Code: {response.status_code}")
         return None
 
 
@@ -137,10 +138,10 @@ def get_wikidata_property_label(property_id, language="en"):
             labels = entities[property_id].get("labels", {})
             if language in labels:
                 return labels[language].get("value")
-        print(f"No label found for property ID: {property_id}")
+        logger.info(f"No label found for property ID: {property_id}")
         return None
     else:
-        print(f"Failed to fetch data. HTTP Status Code: {response.status_code}")
+        logger.info(f"Failed to fetch data. HTTP Status Code: {response.status_code}")
         return None
 
 

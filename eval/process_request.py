@@ -52,7 +52,6 @@ class ProcessRequest:
             else:
                 results['noSnippet'].append(each_triple)
         
-
         return results
             
 
@@ -159,7 +158,7 @@ class ProcessRequest:
         triples entail or are plausible
         """
         request = Request(self.model_name)
-        results = results = {"a":[], "b":[], "c":[], "d":[]}
+        results = {"a":[], "b":[], "c":[], "d":[]}
 
         for each_triple in raw_triples:
             subject_entity_id = get_wikidata_entity_id(each_triple['subject'])
@@ -169,8 +168,13 @@ class ProcessRequest:
             each_triple_str = f"({each_triple['subject'].replace('_', ' ')}, {each_triple['predicate'].replace('_', ' ')}, {each_triple['object'].replace('_', ' ')})"
             output = request.verify_triple_lm_wikidata(each_triple_str, all_triples_wikidata_str)
             #print("output", output)
-            results = self.parse_lm_output(results, output, each_triple_str)
+            results = self.parse_lm_output(each_triple_str, results, output)
         
 
         print("Precision results ....")
+        print("Total # triples", len(raw_triples))
+        print("Fraction of triples true", len(results['a'])/len(raw_triples))
+        print("Fraction of triples plausible", len(results['b'])/len(raw_triples))    
+        print("Fraction of triples implausble", len(results['c'])/len(raw_triples))
+        print("Fraction of triples false", len(results['d'])/len(raw_triples))
         print(results)

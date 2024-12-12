@@ -1,11 +1,11 @@
 {
     "People": [
         "Gerhard Weikum", "Irène Joliot-Curie", "Joseph Beuys", "Zenobia", "Bal Gangadhar Tilak",
-        "Jasprit Bumrah", "Galileo Ferraris", "Heinrich Heine", "Paula Modersohn-Becker", "Blaise Pascal",
+        "Jasprit Bumrah", "Galileo Ferraris", "Heinrich Heine", "Paula Modersohn-Becker", "Bernt Schiele",
         "Fannie Lou Hamer", "Harald Hardrada", "Mary Seacole", "Mencius", "Joseph Haydn",
         "Steve Biko", "Hildegard of Bingen", "Max Schmeling", "Leonora Carrington", "Konrad Zuse", 
         "Ziauddin Yousafzai", "Kwame Nkrumah", "Empedocles", "Steffi Graf", "Birutė Galdikas", 
-        "Toni Morrison", "Goku", "Kurt Gödel", "Vandana Shiva", "Paracelsus"
+        "Toni Morrison", "Noddy", "Kurt Gödel", "Vandana Shiva", "Paracelsus"
     ],
     "Companies": [
         "HCL Technologies", "Qantas", "Subaru Corporation", "Hyundai Mobis", "Lucid Motors",
@@ -14,7 +14,7 @@
         "Novo Nordisk", "Puma SE", "Asics Corporation", "PepsiCo", "SoftBank Group", "Carrefour"
     ],
     "Towns or Villages": [
-        "Zermatt", "Oia", "Soglio", "Český Krumlov", "Riquewihr", "Abisko", "Giethoorn", 
+        "Zermatt", "McBride", "Hathras", "Český Krumlov", "Riquewihr", "Abisko", "Giethoorn", 
         "Shirakawa-go", "Patmos", "Dudweiler"
     ],
     "Works of Art": [
@@ -31,13 +31,13 @@
     ],
     "Events": [
         "Battle of Stalingrad", "Meiji Restoration", "Sputnik 1", "Partition of India", 
-        "Spanish Flu Pandemic"
+        "MeToo movement"
     ],
     "Astronomical Objects": [
         "Triangulum Galaxy", "Magellanic Clouds", "Rigel", "Shoemaker-Levy 9", "Titan"
     ],
     "Sports": [
-        "Badminton", "Table Tennis", "Hockey", "Water Polo", "Cricket"
+        "Judo", "Kabaddi", "Quidditch", "Water Polo", "Bossaball"
     ],
     "Bands": [
         "Kraftwerk", "The Velvet Underground", "Pixies", "Sigur Rós", "Arcade Fire"

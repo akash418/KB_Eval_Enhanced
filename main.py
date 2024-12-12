@@ -19,15 +19,17 @@ def main(
     )
 
     list_of_subjects = gpt_runner.get_list_of_subjects()
+
     
     for each_subject in list_of_subjects:
         if wikidata_utils.sanity_check_entity(each_subject) == False:
             print(f"Entity {each_subject} does not exist on wikidata ...")
 
-    
+    """
     gpt_runner.loop(
         subjects_to_expand=list_of_subjects   
     )
+    """
     
 
 

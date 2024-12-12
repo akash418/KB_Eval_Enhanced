@@ -14,15 +14,18 @@ from request import Request
 from wikidata_utils import *
 
 class ProcessRequest:
-    def __init__(self, model_name, wikidata_triples_file_path, seed):
+    def __init__(self, model_name, wikidata_triples_file_path, seed, sampling):
         self.client = OpenAI()
 
         # directory to store the snippets downloaded from the search query
         self.snippet_dir = os.getcwd() + "snippets/"
         self.wikidata_triples_file_path = wikidata_triples_file_path
         self.wikidata_entities_file_path = os.getcwd() + "/wikidata_entities.json"
+        self.gold_triples_file_path = os.getcwd() + "/gold.json"
         self.seed = seed
         self.model_name = model_name
+        self.sampling = sampling
+        self.sample_size = 10 if sampling == True else 0
 
 
     def verify_triples(self, raw_triples):
@@ -160,14 +163,23 @@ class ProcessRequest:
         """
         request = Request(self.model_name)
         results = {"a":[], "b":[], "c":[], "d":[]}
+        
+        if self.sampling:
+            raw_triples = random.sample(raw_triples, self.sample_size)
+
 
         for each_triple in raw_triples:
-            subject_entity_id = get_wikidata_entity_id(each_triple['subject'])
-            wikidata_claims = fetch_wikidata_claims(subject_entity_id)
-            all_triples_wikidata = convert_wikidata_claims_to_triples(wikidata_claims, each_triple['subject'])
-            all_triples_wikidata_str = ", ".join(all_triples_wikidata)
+            wikidata_triples = self.read_gold_triples_file()
+            wikidata_triples_curr_subject = wikidata_triples[each_triple['subject']]
+            wikidata_triples_curr_subject_str = ' '
+            for each_subj_triple in wikidata_triples_curr_subject:
+                wikidata_triples_curr_subject_str+= '(' + each_subj_triple['subject'] + each_subj_triple['predicate'] +  each_subj_triple['object'] + ')' + ','
+
+
+            #all_triples_wikidata_str = ", ".join(all_triples_wikidata)
+
             each_triple_str = f"({each_triple['subject'].replace('_', ' ')}, {each_triple['predicate'].replace('_', ' ')}, {each_triple['object'].replace('_', ' ')})"
-            output = request.verify_triple_lm_wikidata(each_triple_str, all_triples_wikidata_str)
+            output = request.verify_triple_lm_wikidata(each_triple_str, wikidata_triples_curr_subject_str)
             #print("output", output)
             results = self.parse_lm_output(each_triple_str, results, output)
         
@@ -194,6 +206,13 @@ class ProcessRequest:
         
         return subject_list_triple
 
+    def read_gold_triples_file(self):
+
+        with open(self.gold_triples_file_path, "r") as json_file:
+            wikidata_triples = json.load(json_file)
+        
+        return wikidata_triples
+
 
     def compute_wikidata_recall(self, raw_triples):
         """
@@ -212,10 +231,8 @@ class ProcessRequest:
                 fact_count[each_triple['subject']]+=1
             else:
                 fact_count[each_triple['subject']] = 1
-                subject_entity_id = get_wikidata_entity_id(each_triple['subject'])
-                wikidata_claims = fetch_wikidata_claims(subject_entity_id)
-                wikidata_triples = convert_wikidata_claims_to_triples(wikidata_claims, each_triple['subject'], 'dict')
-                wikidata_facts_per_subject[each_triple['subject']] = wikidata_triples
+                wikidata_triples = self.read_gold_triples_file()
+                wikidata_facts_per_subject[each_triple['subject']] = wikidata_triples[each_triple['subject']]
         
 
         print('Yield ...')
@@ -223,11 +240,13 @@ class ProcessRequest:
         num_subjects = len(fact_count)
         print(f"Average count of facts per subject in the sample set: {total_facts/num_subjects}")
 
-        sample_size = 50
         all_wikidata_facts = [item for value_list in wikidata_facts_per_subject.values() for item in value_list]
-        sampled_wikidata_facts = random.sample(all_wikidata_facts, sample_size)
 
-        for each_wikidata_fact in sampled_wikidata_facts:
+        if self.sampling:
+            all_wikidata_facts = random.sample(all_wikidata_facts, self.sample_size)
+
+
+        for each_wikidata_fact in all_wikidata_facts:
             subject_based_facts = self.subject_based_lookup(each_wikidata_fact['subject'], raw_triples)
             subject_based_facts_str = ", ".join(subject_based_facts)
             each_triple_str = f"{each_wikidata_fact['subject']} {each_wikidata_fact['predicate']} {each_wikidata_fact['object']}"
@@ -236,11 +255,11 @@ class ProcessRequest:
 
 
         print("Recall results ....")
-        print("Total # triples", len(sampled_wikidata_facts))
-        print("Fraction of triples true", len(results['a'])/len(sampled_wikidata_facts))
-        print("Fraction of triples plausible", len(results['b'])/len(sampled_wikidata_facts))    
-        print("Fraction of triples implausble", len(results['c'])/len(sampled_wikidata_facts))
-        print("Fraction of triples false", len(results['d'])/len(sampled_wikidata_facts))
+        print("Total # triples", len(all_wikidata_facts))
+        print("Fraction of triples true", len(results['a'])/len(all_wikidata_facts))
+        print("Fraction of triples plausible", len(results['b'])/len(all_wikidata_facts))    
+        print("Fraction of triples implausble", len(results['c'])/len(all_wikidata_facts))
+        print("Fraction of triples false", len(results['d'])/len(all_wikidata_facts))
         print(results)
 
 

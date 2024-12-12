@@ -6,6 +6,8 @@ from  prompter_parser import PromptJSONSchema
 def main(
         gpt_model_elicitation:str,
         template_path_elicitation:str,
+        wikidata_entities_file_path: str,
+        wikidata_triples_file_path:str,
 ):
     
     prompter_parser_module = PromptJSONSchema(
@@ -14,6 +16,8 @@ def main(
     )
 
     gpt_runner = GPTKBCRunner(
+        wikidata_entities_file_path = wikidata_entities_file_path,
+        wikidata_triples_file_path = wikidata_triples_file_path,
         prompter_parser_module=prompter_parser_module
     )
 

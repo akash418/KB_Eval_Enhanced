@@ -13,7 +13,12 @@ from tqdm import tqdm
 from prompter_parser import AbstractPrompterParser
 
 class GPTKBCRunner:
-    def __init__(self, job_description: str = "Knowledge Elicitation for Wiki data entities", prompter_parser_module: AbstractPrompterParser = None,):
+    def __init__(self, 
+                wikidata_entities_file_path:str,
+                wikidata_triples_file_path:str,  
+                job_description: str = "Knowledge Elicitation for Wiki data entities", 
+                prompter_parser_module: AbstractPrompterParser = None
+        ):
         logger.info('Initialize the GPTKC Runner ..')
 
         if prompter_parser_module is None:
@@ -24,12 +29,12 @@ class GPTKBCRunner:
         self.prompter_parser_module = prompter_parser_module
 
         self.tmp_folder = os.getcwd()
-        self.wikidata_entities_file_path = os.getcwd() + "/wikidata_entities.json"
+        self.wikidata_entities_file_path = wikidata_entities_file_path
         self.in_progress_file_path = os.getcwd() + "/in_progress.json"
         self.completed_file_path = os.getcwd() + "/completed.json"
         self.result_file_path = os.getcwd() + "/batch_results.jsonl"
         self.batch_request_file_path = os.getcwd() + "/batch_requests.jsonl"
-        self.csv_file_path = os.getcwd() + "/wikidata_triples.csv"
+        self.csv_file_path = wikidata_triples_file_path
 
     def get_list_of_subjects(self) -> list[str]:
         """

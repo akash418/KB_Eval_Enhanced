@@ -3,8 +3,10 @@ from tqdm import tqdm
 import torch
 from sentence_transformers import SentenceTransformer, util
 from loguru import logger
+import json
 
 """
+
 py file containing helper methods for fetching data from wikidata for entities
 """
 
@@ -224,4 +226,23 @@ def soft_match_utils(raw_triples):
 
     print(f"Collection of plausible triples: {plausible_triples}")
     return plausible_triples
+
+
+def create_gold_triples_file(raw_triples, gold_file_path):
+
+    """
+    Create gold triples file so that every time eval framework is used, web api lookup can be prevented
+    """
+    gold_triples = dict()
+    for each_triple in raw_triples:
+        if each_triple['subject'] not in gold_triples:
+            subject_entity_id = get_wikidata_entity_id(each_triple['subject'])
+            wikidata_claims = fetch_wikidata_claims(subject_entity_id)
+            all_triples_wikidata = convert_wikidata_claims_to_triples(wikidata_claims, each_triple['subject'], 'dict')
+            gold_triples[each_triple['subject']] = all_triples_wikidata
+    
+    with open(gold_file_path, "w") as json_file:
+        json.dump(gold_triples, json_file, indent=4)
+
+    print(f"Data has been written to {gold_file_path}")
 

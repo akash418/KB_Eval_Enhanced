@@ -85,7 +85,8 @@ class ProcessRequest:
                 raw_triples.append(row)
         
         randomized_triples = random.sample(raw_triples, 10)
-        return randomized_triples
+        #return randomized_triples
+        return raw_triples
     
     def get_triples_statistics(self, raw_triples):
         """
@@ -187,7 +188,8 @@ class ProcessRequest:
         subject_list_triple = []
         for each_triple in raw_triples:
             if each_triple['subject'] == current_subject:
-                subject_list_triple.append(each_triple)
+                each_triple_str = f"({current_subject}, {each_triple['predicate']}, {each_triple['object']})"
+                subject_list_triple.append(each_triple_str)
 
         
         return subject_list_triple
@@ -210,17 +212,18 @@ class ProcessRequest:
                 fact_count[each_triple['subject']]+=1
             else:
                 fact_count[each_triple['subject']] = 1
-                wikidata_claims = fetch_wikidata_claims(fact_count[each_triple['subject']])
+                subject_entity_id = get_wikidata_entity_id(each_triple['subject'])
+                wikidata_claims = fetch_wikidata_claims(subject_entity_id)
                 wikidata_triples = convert_wikidata_claims_to_triples(wikidata_claims, each_triple['subject'], 'dict')
                 wikidata_facts_per_subject[each_triple['subject']] = wikidata_triples
         
 
         print('Yield ...')
-        total_facts = sum(len(v) for v in fact_count.values())
+        total_facts = sum(fact_count.values())
         num_subjects = len(fact_count)
         print(f"Average count of facts per subject in the sample set: {total_facts/num_subjects}")
 
-        sample_size = 10
+        sample_size = 50
         all_wikidata_facts = [item for value_list in wikidata_facts_per_subject.values() for item in value_list]
         sampled_wikidata_facts = random.sample(all_wikidata_facts, sample_size)
 

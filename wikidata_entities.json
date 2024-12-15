@@ -15,7 +15,7 @@
     ],
     "Towns or Villages": [
         "Zermatt", "McBride", "Hathras", "Český Krumlov", "Riquewihr", "Abisko", "Giethoorn", 
-        "Shirakawa-go", "Patmos", "Dudweiler"
+        "Shirakawa-go", "Patmos", "Zermatt"
     ],
     "Works of Art": [
         "The Hay Wain", "Water Lilies", "Composition VII", "The Arnolfini Portrait", "The Garden of Earthly Delights",
@@ -30,14 +30,14 @@
         "LG Gram"
     ],
     "Events": [
-        "Battle of Stalingrad", "Meiji Restoration", "Sputnik 1", "Partition of India", 
+        "Battle of Stalingrad", "French Revolution", "Sputnik 1", "Partition of India", 
         "MeToo movement"
     ],
     "Astronomical Objects": [
         "Triangulum Galaxy", "Magellanic Clouds", "Rigel", "Shoemaker-Levy 9", "Titan"
     ],
     "Sports": [
-        "Judo", "Kabaddi", "Quidditch", "Water Polo", "Bossaball"
+        "Judo", "Golf", "Quidditch", "Water Polo", "Bossaball"
     ],
     "Bands": [
         "Kraftwerk", "The Velvet Underground", "Pixies", "Sigur Rós", "Arcade Fire"

@@ -233,6 +233,7 @@ def create_gold_triples_file(raw_triples, gold_file_path):
     """
     Create gold triples file so that every time eval framework is used, web api lookup can be prevented
     """
+    
     gold_triples = dict()
     for each_triple in raw_triples:
         if each_triple['subject'] not in gold_triples:

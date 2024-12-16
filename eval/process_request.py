@@ -9,18 +9,27 @@ import pandas as pd
 import requests
 from loguru import logger
 import csv
+from tqdm import tqdm
 
 from request import Request
 from wikidata_utils import *
 
 class ProcessRequest:
-    def __init__(self, model_name, wikidata_triples_file_path, seed, sampling):
+    def __init__(self, 
+                model_name, 
+                wikidata_triples_file_path,
+                wikidata_entities_file_path, 
+                seed, 
+                sampling
+        ):
+
+
         self.client = OpenAI()
 
         # directory to store the snippets downloaded from the search query
         self.snippet_dir = os.getcwd() + "snippets/"
         self.wikidata_triples_file_path = wikidata_triples_file_path
-        self.wikidata_entities_file_path = os.getcwd() + "/wikidata_entities.json"
+        self.wikidata_entities_file_path = wikidata_entities_file_path
         self.gold_triples_file_path = os.getcwd() + "/gold.json"
         self.seed = seed
         self.model_name = model_name
@@ -168,7 +177,7 @@ class ProcessRequest:
             raw_triples = random.sample(raw_triples, self.sample_size)
 
 
-        for each_triple in raw_triples:
+        for each_triple in tqdm(raw_triples, desc = "Computing Precision ..."):
             wikidata_triples = self.read_gold_triples_file()
             wikidata_triples_curr_subject = wikidata_triples[each_triple['subject']]
             wikidata_triples_curr_subject_str = ' '
@@ -246,7 +255,7 @@ class ProcessRequest:
             all_wikidata_facts = random.sample(all_wikidata_facts, self.sample_size)
 
 
-        for each_wikidata_fact in all_wikidata_facts:
+        for each_wikidata_fact in tqdm(all_wikidata_facts, desc = "Computing Recall ..."):
             subject_based_facts = self.subject_based_lookup(each_wikidata_fact['subject'], raw_triples)
             subject_based_facts_str = ", ".join(subject_based_facts)
             each_triple_str = f"{each_wikidata_fact['subject']} {each_wikidata_fact['predicate']} {each_wikidata_fact['object']}"

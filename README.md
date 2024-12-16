@@ -15,11 +15,14 @@ Steps to use:
 python main.py \
     --template_path_elicitation templates/prompts/prompt_elicitation.json.jinja \
     --gpt_model_elicitation "gpt-4o-mini" \
+    --wikidata_entities_file_path /content/KB_Eval_Enhanced/wikidata_entities.json \
+    --wikidata_triples_file_path /content/KB_Eval_Enhanced/wikidata_triples.csv
+
 ```
 
-running this command will save triples in ```wikidata_triples.csv```
+running this command will save triples in the location specified in ```wikidata_triples.csv```
 
-- Fact Verification: (web search snippet generation +  LLM fact verification) or soft matching from wikidata
+- Fact Verification: 
 
 ```bash
 
@@ -27,16 +30,21 @@ cd eval/
 
 python main.py \
     --model_name "gpt-4o-mini" \
-    --wikidata_triples_file_path KB_Eval_Enhanced/wikidata_triples.csv \
+    --wikidata_triples_file_path /content/KB_Eval_Enhanced/wikidata_triples.csv \
     --seed 42 \
-    --verification_method wikidata
+    --verification_method wikidata \
+    --wikidata_entities_file_path /content/KB_Eval_Enhanced/wikidata_entities.json \
+    --sampling False
+
 ```
 
+verification_method: wikidata or web (Specify the generation source of gold triples: web snippet or wikidata)
+sampling: do you want get results for just sampled model generated facts? 
 
 How the evaluation framework works?
 - Get a collection of triples with elicitation prompt on handpicked entities from wikidata
-- Perform fact verification on sampled triples
+- Perform fact verification using LLM as a judge
+
 
 Output of evaluation framework
-- Web verification paradigm gives fraction of triples falling into either of these categories (True, Plausible, Not plausible, Snippet cannot be collected)
-- Soft matching from wikidata, fraction of triples that can be semantically matched by parsed claims from wikidata api
+- Fraction of triples falling into either of these categories (True, Plausible, Not plausible, False)

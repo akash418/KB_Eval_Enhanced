@@ -12,6 +12,10 @@ Steps to use:
 - Knowledge elicitation from wikidata entities using the prompt in templates folder, executable example
 
 ```bash
+
+cd elicitation/
+
+
 python main.py \
     --template_path_elicitation templates/prompts/prompt_elicitation.json.jinja \
     --gpt_model_elicitation "gpt-4o-mini" \
@@ -20,7 +24,7 @@ python main.py \
 
 ```
 
-running this command will save triples in the location specified in ```wikidata_triples.csv```
+running this command will save triples in the location specified in ```/content/KB_Eval_Enhanced/wikidata_triples.csv```
 
 - Fact Verification: 
 

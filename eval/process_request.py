@@ -215,6 +215,36 @@ class ProcessRequest:
         
         return subject_list_triple
 
+    def entity_based_stats(self, raw_triples, results):
+
+        """
+        Process some entity wise statistics
+        """
+
+        # dict for recording subject to count of a,b,c ... (true, plausible, implausible, false) etc
+        subject_to_key_counts = {}
+
+        for key, triples in results.items():
+            for triple in triples:
+
+                subject = triple.split(",")[0].strip("() ")
+                
+                # Initialize nested dictionary for the subject if it doesn't exist
+                if subject not in subject_to_key_counts:
+                    subject_to_key_counts[subject] = {}
+                
+                # Increment the count for the current key
+                if key not in subject_to_key_counts[subject]:
+                    subject_to_key_counts[subject][key] = 0
+                subject_to_key_counts[subject][key] += 1
+
+        print(subject_to_key_counts)
+
+        for subject, freq_count in subject_to_key_counts.items():
+            if freq_count['c']==0 and freq_count['d']==0:
+                print(subject)
+                    
+
     def read_gold_triples_file(self):
 
         with open(self.gold_triples_file_path, "r") as json_file:
@@ -271,6 +301,7 @@ class ProcessRequest:
         print("Fraction of triples false", len(results['d'])/len(all_wikidata_facts))
         print(results)
 
+        self.entity_based_stats(raw_triples, results)
 
 
         

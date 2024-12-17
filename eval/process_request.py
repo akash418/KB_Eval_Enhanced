@@ -226,8 +226,13 @@ class ProcessRequest:
 
         for key, triples in results.items():
             for triple in triples:
+                
+                triple_split = triple.strip("()").split(", ")
+                if len(triple_split) != 3:
+                    print(f"Skipping invalid triple: {triple}")
+                    continue
 
-                subject = triple.split(",")[0].strip("() ")
+                subject,b,c = triple_split
                 
                 # Initialize nested dictionary for the subject if it doesn't exist
                 if subject not in subject_to_key_counts:
@@ -241,7 +246,7 @@ class ProcessRequest:
         print(subject_to_key_counts)
 
         for subject, freq_count in subject_to_key_counts.items():
-            if freq_count['c']==0 and freq_count['d']==0:
+            if "c" not in freq_count and "d" not in freq_count:
                 print(subject)
                     
 
@@ -288,7 +293,7 @@ class ProcessRequest:
         for each_wikidata_fact in tqdm(all_wikidata_facts, desc = "Computing Recall ..."):
             subject_based_facts = self.subject_based_lookup(each_wikidata_fact['subject'], raw_triples)
             subject_based_facts_str = ", ".join(subject_based_facts)
-            each_triple_str = f"{each_wikidata_fact['subject']} {each_wikidata_fact['predicate']} {each_wikidata_fact['object']}"
+            each_triple_str = f"({each_wikidata_fact['subject']}, {each_wikidata_fact['predicate']}, {each_wikidata_fact['object']})"
             output = request.verify_triple_lm_wikidata(each_triple_str, subject_based_facts_str)
             results = self.parse_lm_output(each_triple_str, results, output)
 

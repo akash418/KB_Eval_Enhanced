@@ -200,6 +200,8 @@ class ProcessRequest:
         print("Fraction of triples implausble", len(results['c'])/len(raw_triples))
         print("Fraction of triples false", len(results['d'])/len(raw_triples))
         print(results)
+        
+        self.entity_based_stats(raw_triples, results)
 
     def subject_based_lookup(self, current_subject, raw_triples):
 
@@ -244,11 +246,26 @@ class ProcessRequest:
                 subject_to_key_counts[subject][key] += 1
 
         print(subject_to_key_counts)
+        subjects_true_or_plausible = []
+        subjects_false_or_implausible = []
 
         for subject, freq_count in subject_to_key_counts.items():
-            if "c" not in freq_count and "d" not in freq_count:
-                print(subject)
-                    
+            if "a" not in freq_count and "b" not in freq_count:
+                if "c" in freq_count or "d" in freq_count:
+                    subjects_false_or_implausible.append(subject)
+            
+
+            if "a" in freq_count or "b" in freq_count:
+                if "c" not in freq_count and "d" not in freq_count:
+                    subjects_true_or_plausible.append(subject)
+        
+
+        print("Subjects true or plausible ...", subjects_true_or_plausible)
+        print("count subjects true or plausible ..", len(subjects_true_or_plausible))
+        print("\n")
+        print("Subjects false or implausible ...", subjects_false_or_implausible)
+        print("Subjects false or implausible  ...", len(subjects_false_or_implausible))
+
 
     def read_gold_triples_file(self):
 

@@ -8,6 +8,16 @@ pip install -r requirements.txt
 
 List of entities handpicked from Wikidata - ```wikidata_entities.json```
 
+Contents of various prompts
+```
+prompt_elicitation.json.jinja: Standard elicitation with expected cardinality
+
+prompt_elicitation.json.jinja2: Elicitation with 1.5 x more expected cardinality
+
+```
+
+
+
 Steps to use:
 - Knowledge elicitation from wikidata entities using the prompt in templates folder, executable example
 

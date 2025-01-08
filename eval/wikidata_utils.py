@@ -238,9 +238,10 @@ def create_gold_triples_file(raw_triples, gold_file_path):
     for each_triple in raw_triples:
         if each_triple['subject'] not in gold_triples:
             subject_entity_id = get_wikidata_entity_id(each_triple['subject'])
-            wikidata_claims = fetch_wikidata_claims(subject_entity_id)
-            all_triples_wikidata = convert_wikidata_claims_to_triples(wikidata_claims, each_triple['subject'], 'dict')
-            gold_triples[each_triple['subject']] = all_triples_wikidata
+            if subject_entity_id is not None:
+                wikidata_claims = fetch_wikidata_claims(subject_entity_id)
+                all_triples_wikidata = convert_wikidata_claims_to_triples(wikidata_claims, each_triple['subject'], 'dict')
+                gold_triples[each_triple['subject']] = all_triples_wikidata
     
     with open(gold_file_path, "w") as json_file:
         json.dump(gold_triples, json_file, indent=4)

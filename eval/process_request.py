@@ -293,7 +293,8 @@ class ProcessRequest:
             else:
                 fact_count[each_triple['subject']] = 1
                 wikidata_triples = self.read_gold_triples_file()
-                wikidata_facts_per_subject[each_triple['subject']] = wikidata_triples[each_triple['subject']]
+                if each_triple['subject'] in wikidata_triples:
+                    wikidata_facts_per_subject[each_triple['subject']] = wikidata_triples[each_triple['subject']]
         
 
         print('Yield ...')

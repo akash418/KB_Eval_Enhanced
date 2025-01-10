@@ -12,9 +12,9 @@ Contents of various prompts
 ```
 prompt_elicitation.json.jinja: Standard elicitation with expected cardinality
 
-prompt_elicitation.json.jinja2: Elicitation with 1.5 x more expected cardinality
-
 ```
+
+Make changes to jinja file to record elicitaton with different cardinality or instructions
 
 
 Steps to use:
@@ -33,7 +33,7 @@ python main.py \
 
 ```
 
-running this command will save triples in the location specified in ```/content/KB_Eval_Enhanced/wikidata_triples.csv```
+running this command will save triples in the location specified like ```/content/KB_Eval_Enhanced/wikidata_triples.csv```
 
 - Fact Verification: 
 
@@ -52,7 +52,7 @@ python main.py \
 ```
 
 verification_method: wikidata or web (Specify the generation source of gold triples: web snippet or wikidata)
-sampling: do you want get results for just sampled model generated facts? 
+sampling: do you want get results for just randomly sampled model generated facts? 
 
 How the evaluation framework works?
 - Get a collection of triples with elicitation prompt on handpicked entities from wikidata

@@ -11,7 +11,8 @@ def main(
         model_name:str,
         seed: str,
         verification_method: str,
-        sampling: True,
+        sample_size: int,
+        metric: str,
 ):  
     # path where all wikidata parsed facts will be stored for each entity
     gold_triple_file_path = os.getcwd() + "/gold.json"
@@ -34,7 +35,7 @@ def main(
         wikidata_triples_file_path,
         wikidata_entities_file_path, 
         seed, 
-        sampling
+        sample_size
     )
 
     ret_triples = process_request.read_triples_file()
@@ -62,11 +63,12 @@ def main(
         #plausible_triples = soft_match_utils(ret_triples)
         #print(f"Fraction of triples plausible: {len(plausible_triples)/len(ret_triples)}")
 
-        #process_request.compute_wikidata_precision(ret_triples)
-        process_request.compute_wikidata_recall(ret_triples)
+        if metric == "precision":
+            process_request.compute_wikidata_precision(ret_triples)
+        else:
+            process_request.compute_wikidata_recall(ret_triples)
 
 
-    
     
 
 

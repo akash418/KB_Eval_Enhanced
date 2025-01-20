@@ -202,13 +202,13 @@ class ProcessRequest:
         print(results)
 
 
-        data_to_csv = {
-            "True": len(results['a']/len(raw_triples)),
-            "Plausible": len(results['b']/len(raw_triples)),
-            "Implausible": len(results['c']/len(raw_triples)),
-            "False": len(results['d']/len(raw_triples)),
+        data_to_csv = [{
+            "True": len(results['a'])/(len(raw_triples)),
+            "Plausible": len(results['b'])/(len(raw_triples)),
+            "Implausible": len(results['c'])/(len(raw_triples)),
+            "False": len(results['d'])/(len(raw_triples)),
             "Total #Triples": len(raw_triples), 
-        }
+        }]
         
         self.write_to_csv('precison_results.csv', data_to_csv)
         
@@ -335,24 +335,24 @@ class ProcessRequest:
         print("Fraction of triples false", len(results['d'])/len(all_wikidata_facts))
         print(results)
 
-        data_to_csv = {
-            "True": len(results['a']/len(all_wikidata_facts)),
-            "Plausible": len(results['b']/len(all_wikidata_facts)),
-            "Implausible": len(results['c']/len(all_wikidata_facts)),
-            "False": len(results['d']/len(all_wikidata_facts)),
+        data_to_csv = [{
+            "True": len(results['a'])/(len(all_wikidata_facts)),
+            "Plausible": len(results['b'])/(len(all_wikidata_facts)),
+            "Implausible": len(results['c'])/(len(all_wikidata_facts)),
+            "False": len(results['d'])/(len(all_wikidata_facts)),
             "Total #Triples": len(all_wikidata_facts), 
-        }
+        }]
         
         self.write_to_csv('recall_results.csv', data_to_csv)
 
         self.entity_based_stats(raw_triples, results)
 
 
-    def write_to_csv(filename, data):
+    def write_to_csv(self, filename, data):
 
         headers = ['True', 'Plausible', 'Implausible', 'False', 'Total #Triples']
 
-        with open(filename, 'w', newline = "") as file:
+        with open(filename, mode = 'w', newline = "") as file:
             writer = csv.DictWriter(file, fieldnames = headers)
             writer.writeheader()
             for row in data:

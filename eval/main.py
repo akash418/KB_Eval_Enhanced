@@ -39,7 +39,7 @@ def main(
     )
 
     ret_triples = process_request.read_triples_file()
-    process_request.get_triples_statistics(ret_triples)
+    #process_request.get_triples_statistics(ret_triples)
 
     """
     Check if gold triples pasrsed from wikidata api for each entity exists or not

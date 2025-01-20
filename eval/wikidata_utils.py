@@ -228,14 +228,14 @@ def soft_match_utils(raw_triples):
     return plausible_triples
 
 
-def create_gold_triples_file(raw_triples, gold_file_path):
+def create_gold_triples_file(data_triples, gold_file_path):
 
     """
     Create gold triples file so that every time eval framework is used, web api lookup can be prevented
     """
     
     gold_triples = dict()
-    for each_triple in raw_triples:
+    for each_triple in data_triples:
         if each_triple['subject'] not in gold_triples:
             subject_entity_id = get_wikidata_entity_id(each_triple['subject'])
             if subject_entity_id is not None:

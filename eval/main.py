@@ -6,13 +6,14 @@ import os
 from loguru import logger
 
 def main(
-        wikidata_triples_file_path:str,
+        wikidata_triples_dir:str,
         wikidata_entities_file_path:str,
         model_name:str,
         seed: str,
         verification_method: str,
         sample_size: int,
         metric: str,
+        results_dir_path:str
 ):  
     # path where all wikidata parsed facts will be stored for each entity
     gold_triple_file_path = os.getcwd() + "/gold.json"
@@ -32,13 +33,16 @@ def main(
     
     process_request = ProcessRequest(
         model_name, 
-        wikidata_triples_file_path,
+        wikidata_triples_dir,
         wikidata_entities_file_path, 
         seed, 
-        sample_size
+        sample_size,
+        results_dir_path,
     )
 
-    ret_triples = process_request.read_triples_file()
+    ret_triples = process_request.read_triples_dir()
+
+    #ret_triples = process_request.read_triples_file()
     #process_request.get_triples_statistics(ret_triples)
 
     """
@@ -49,7 +53,9 @@ def main(
         logger.info("Gold triples file exists ..")
     else:
         logger.info("Gold triples does not exists, it may take a while to create one ...")
-        create_gold_triples_file(ret_triples, gold_triple_file_path)
+        # get the rows from the first file
+        first_file_data = next(iter(ret_triples.values()))
+        create_gold_triples_file(first_file_data, gold_triple_file_path)
 
 
     if verification_method == "web":
@@ -64,9 +70,9 @@ def main(
         #print(f"Fraction of triples plausible: {len(plausible_triples)/len(ret_triples)}")
 
         if metric == "precision":
-            process_request.compute_wikidata_precision(ret_triples)
+            process_request.compute_precision_dir(ret_triples)
         else:
-            process_request.compute_wikidata_recall(ret_triples)
+            process_request.compute_recall_dir(ret_triples)
 
 
     

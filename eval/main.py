@@ -42,9 +42,6 @@ def main(
 
     ret_triples = process_request.read_triples_dir()
 
-    #ret_triples = process_request.read_triples_file()
-    #process_request.get_triples_statistics(ret_triples)
-
     """
     Check if gold triples pasrsed from wikidata api for each entity exists or not
     Local persisted copy will improve the runtime
@@ -53,21 +50,18 @@ def main(
         logger.info("Gold triples file exists ..")
     else:
         logger.info("Gold triples does not exists, it may take a while to create one ...")
-        # get the rows from the first file
+        # get the data from the first file
         first_file_data = next(iter(ret_triples.values()))
         create_gold_triples_file(first_file_data, gold_triple_file_path)
 
-
+    # need to verify if it works fine with the new changes
     if verification_method == "web":
         ret_triples_with_snippet = process_request.query_snippets(ret_triples)
         output_dict = process_request.verify_triples(ret_triples_with_snippet)
         print("Output dictionary recording triple verification ... ", output_dict)
     
-    
 
     if verification_method == "wikidata":
-        #plausible_triples = soft_match_utils(ret_triples)
-        #print(f"Fraction of triples plausible: {len(plausible_triples)/len(ret_triples)}")
 
         if metric == "precision":
             process_request.compute_precision_dir(ret_triples)

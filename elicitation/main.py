@@ -5,7 +5,7 @@ from  prompter_parser import PromptJSONSchema
 
 def main(
         gpt_model_elicitation:str,
-        template_path_elicitation:str,
+        template_path_dir:str,      # path containing multiple jinja files
         wikidata_entities_file_path: str,
         wikidata_triples_file_path:str,
 ):

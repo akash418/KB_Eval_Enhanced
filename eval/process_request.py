@@ -36,7 +36,7 @@ class ProcessRequest:
         self.gold_triples_file_path = os.getcwd() + "/gold.json"
         self.seed = seed
         self.model_name = model_name
-        
+
         # boolean value to see if sampling should be done or not
         self.sampling = True if sample_size > -1 else False
         self.sample_size = sample_size
@@ -91,21 +91,6 @@ class ProcessRequest:
         
         return results
     
-    # rewritten not being in use
-    def read_triples_file(self):
-        """
-        Read the wikidata triples file, get some random ones (if needed) and 
-        """
-        raw_triples = []
-        with open(self.wikidata_triples_file_path, mode='r', newline='', encoding='utf-8') as f:
-            csv_reader = csv.DictReader(f)
-            for row in csv_reader:
-                raw_triples.append(row)
-        
-        randomized_triples = random.sample(raw_triples, self.sample_size)
-        #return randomized_triples
-        return raw_triples
-    
     def read_triples_dir(self):
         raw_triples = {}
 
@@ -129,21 +114,20 @@ class ProcessRequest:
 
 
 
-    def get_triples_statistics(self, raw_triples):
+    def get_triples_statistics(self, data_triples):
         """
         Read the wikidata triples file and get some basic stastics
         """
-
-        unique_subjects = set(entry["subject"] for entry in raw_triples)
+        unique_subjects = set(entry["subject"] for entry in data_triples)
         print("Unique Subjects:", unique_subjects)
 
 
-    def query_snippets(self, raw_triples):
+    def query_snippets(self, data_triples):
         """
         Process raw triples, make the query to the search engine and get the snippets
         Wait for 2 seconds before making a new query (using free subscription for now that it requires min 1 sec wait time)
         """
-        for each_triple in raw_triples:
+        for each_triple in data_triples:
             returned_snippet = self.get_brave_results(each_triple['subject'].replace("_", " ") + " " + each_triple['object'].replace("_", " "))
             # get the snippet returned by api search call and add a new key to the triple dict
             each_triple['snippet'] = returned_snippet
@@ -158,9 +142,9 @@ class ProcessRequest:
         file_path = os.path.join(self.snippet_dir, f"{self.seed}.pkl")
 
         with open(file_path, "wb") as f:
-            pickle.dump(raw_triples, f)
+            pickle.dump(data_triples, f)
         
-        return raw_triples
+        return data_triples
 
     def get_brave_results(self, search_term):
         
@@ -192,46 +176,6 @@ class ProcessRequest:
             logger.info(f"parsing error ... {data}")
         
         return snippets
-
-    # rewritten not being in use
-    def compute_wikidata_precision(self, raw_triples):
-        """
-        Approach: Iterate over all triples, get wikidata triples and ask LLM as judge if model generated
-        triples entail or are plausible given wikidata triples
-        """
-        request = Request(self.model_name)
-        results = {"a":[], "b":[], "c":[], "d":[]}
-        
-        if self.sampling:
-            raw_triples = random.sample(raw_triples, self.sample_size)
-
-
-        for each_triple in tqdm(raw_triples, desc = "Computing Precision ..."):
-            wikidata_triples = self.read_gold_triples_file()
-            wikidata_triples_curr_subject = wikidata_triples[each_triple['subject']]
-            wikidata_triples_curr_subject_str = ' '
-            for each_subj_triple in wikidata_triples_curr_subject:
-                wikidata_triples_curr_subject_str+= '(' + each_subj_triple['subject'] + each_subj_triple['predicate'] +  each_subj_triple['object'] + ')' + ','
-
-
-            #all_triples_wikidata_str = ", ".join(all_triples_wikidata)
-
-            each_triple_str = f"({each_triple['subject'].replace('_', ' ')}, {each_triple['predicate'].replace('_', ' ')}, {each_triple['object'].replace('_', ' ')})"
-            output = request.verify_triple_lm_wikidata(each_triple_str, wikidata_triples_curr_subject_str)
-            #print("output", output)
-            results = self.parse_lm_output(each_triple_str, results, output)
-        
-        data_to_csv = [{
-            "True": len(results['a'])/(len(raw_triples)),
-            "Plausible": len(results['b'])/(len(raw_triples)),
-            "Implausible": len(results['c'])/(len(raw_triples)),
-            "False": len(results['d'])/(len(raw_triples)),
-            "Total #Triples": len(raw_triples), 
-        }]
-        
-        self.write_to_csv('precison_results.csv', data_to_csv)
-        
-        self.entity_based_stats(raw_triples, results)
 
     def compute_precision_dir(self, raw_triples):
 
@@ -366,69 +310,6 @@ class ProcessRequest:
             wikidata_triples = json.load(json_file)
         
         return wikidata_triples
-
-
-    # rewritten not being in use right now 
-    def compute_wikidata_recall(self, raw_triples):
-        """
-        Approach: Iterate over all wikidata generated triples for entities and ask LLM as a judge if wikidata generated
-        triples entail or plausible given model generated triples
-        """
-        fact_count = dict()
-        request = Request(self.model_name)
-        results = {"a":[], "b":[], "c":[], "d":[]}
-
-        # dict for recording wikidata facts per subject
-        wikidata_facts_per_subject = dict()
-
-        for each_triple in raw_triples:
-            if each_triple['subject'] in fact_count:
-                fact_count[each_triple['subject']]+=1
-            else:
-                fact_count[each_triple['subject']] = 1
-                wikidata_triples = self.read_gold_triples_file()
-                if each_triple['subject'] in wikidata_triples:
-                    wikidata_facts_per_subject[each_triple['subject']] = wikidata_triples[each_triple['subject']]
-        
-
-        print('Yield ...')
-        total_facts = sum(fact_count.values())
-        num_subjects = len(fact_count)
-        print(f"Average count of facts per subject in the sample set: {total_facts/num_subjects}")
-
-        all_wikidata_facts = [item for value_list in wikidata_facts_per_subject.values() for item in value_list]
-
-        if self.sampling:
-            all_wikidata_facts = random.sample(all_wikidata_facts, self.sample_size)
-
-
-        for each_wikidata_fact in tqdm(all_wikidata_facts, desc = "Computing Recall ..."):
-            subject_based_facts = self.subject_based_lookup(each_wikidata_fact['subject'], raw_triples)
-            subject_based_facts_str = ", ".join(subject_based_facts)
-            each_triple_str = f"({each_wikidata_fact['subject']}, {each_wikidata_fact['predicate']}, {each_wikidata_fact['object']})"
-            output = request.verify_triple_lm_wikidata(each_triple_str, subject_based_facts_str)
-            results = self.parse_lm_output(each_triple_str, results, output)
-
-
-        print("Recall results ....")
-        print("Total # triples", len(all_wikidata_facts))
-        print("Fraction of triples true", len(results['a'])/len(all_wikidata_facts))
-        print("Fraction of triples plausible", len(results['b'])/len(all_wikidata_facts))    
-        print("Fraction of triples implausble", len(results['c'])/len(all_wikidata_facts))
-        print("Fraction of triples false", len(results['d'])/len(all_wikidata_facts))
-        print(results)
-
-        data_to_csv = [{
-            "True": len(results['a'])/(len(all_wikidata_facts)),
-            "Plausible": len(results['b'])/(len(all_wikidata_facts)),
-            "Implausible": len(results['c'])/(len(all_wikidata_facts)),
-            "False": len(results['d'])/(len(all_wikidata_facts)),
-            "Total #Triples": len(all_wikidata_facts), 
-        }]
-        
-        self.write_to_csv('recall_results.csv', data_to_csv)
-
-        self.entity_based_stats(raw_triples, results)
 
 
     def write_to_csv(self, filename, data):

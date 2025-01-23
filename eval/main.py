@@ -15,6 +15,21 @@ def main(
         metric: str,
         results_dir_path:str
 ):  
+    """
+    Main function to perform eval on multiple elicited triples with specified parameters
+
+    Arguments:
+        wikidata_triples_str (str): Directory path storing the collection of elicited csv triples files
+        wikidata_entities_file_path (str): File path storing the manually curated wikidata entity files
+        model_name (str): Name of the LLM that will be used for evaluation
+        seed (str): Seed value that will be used to identify the snippet directory for storing web instances
+        verification_method (str): Either wikidata or web
+        sample_size (int): Size of the random sample
+        metric (str): Precision or recall
+        results_dir_path (str): Directory path for storing the eval results
+    
+    
+    """
     # path where all wikidata parsed facts will be stored for each entity
     gold_triple_file_path = os.getcwd() + "/gold.json"
 

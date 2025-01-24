@@ -60,7 +60,9 @@ class GPTKBCRunner:
         #self.in_progress_file_path = os.getcwd() + "/in_progress.json"
         #self.completed_file_path = os.getcwd() + "/completed.json"
         #self.result_file_path = os.getcwd() + "/batch_results.jsonl"
-        #self.batch_request_file_path = os.getcwd() + "/batch_requests.jsonl"
+
+        # file path used for storing temporary batch json objects until they are submitted
+        self.batch_record_file_path = os.getcwd() + "/batch_records.jsonl"
         #self.csv_file_path = wikidata_triples_file_path
 
     def get_list_of_subjects(self) -> list[str]:
@@ -275,12 +277,12 @@ class GPTKBCRunner:
             req = self.prompter_parser_module.get_elicitation_prompt(subject_name=subject)
             batch_request.append(req)
 
-        with open(self.batch_request_file_path, "w") as f:
+        with open(self.batch_record_file_path, "w") as f:
             for obj in batch_request:
                 f.write(json.dumps(obj) + "\n")
         
         batch_input_file = self.openai_client.files.create(
-            file=open(self.batch_request_file_path, "rb"),
+            file=open(self.batch_record_file_path, "rb"),
             purpose="batch"
         )
 

@@ -45,6 +45,9 @@ def main(
     valid_methods = ["web", "wikidata"]
     if verification_method not in valid_methods:
         raise ValueError(f"Invalid verification method. Choose from {valid_methods}")
+
+    if not os.path.exists(results_dir_path):
+        os.makedirs(results_dir_path)
     
     process_request = ProcessRequest(
         model_name, 

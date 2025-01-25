@@ -24,53 +24,33 @@ def main(
         job_type (str): Either `submit`to submit a new request `verify`to just check and process the status of already submitted batches (default)
     
     """
-
-
-    """
-    prompter_parser_module = PromptJSONSchema(
-        template_path_elicitation=template_path_elicitation,
-        gpt_model_elicitation=gpt_model_elicitation
-    )
-
-    gpt_runner = GPTKBCRunner(
-        wikidata_entities_file_path = wikidata_entities_file_path,
-        wikidata_triples_file_path = wikidata_triples_file_path,
-        prompter_parser_module=prompter_parser_module
-    )
-
-    list_of_subjects = gpt_runner.get_list_of_subjects()
-
-    gpt_runner.loop(
-        subjects_to_expand=list_of_subjects   
-    )
-
-    """
-
-    # Iterate through all files in template_path_dir
-    for index, file_name in enumerate(os.listdir(template_path_dir), start = 1):
-        if file_name.endswith(".jinja"): 
-            file_path = os.path.join(template_path_dir, file_name)
-
-            # Create the PromptJSONSchema instance for the current file
-            prompter_parser_module = PromptJSONSchema(
-                template_path_elicitation = file_path,
-                gpt_model_elicitation = gpt_model_elicitation
-            )
-
-            # Pass the instance to GPTKBCRunner
-            gpt_runner = GPTKBCRunner(
-                curr_index = index,
-                wikidata_entities_file_path = wikidata_entities_file_path,
-                wikidata_triples_dir = wikidata_triples_dir,
-                prompter_parser_module = prompter_parser_module,
-                job_type = job_type
-            )
-
-            # Run the GPTKBCRunner loop
-            list_of_subjects = gpt_runner.get_list_of_subjects()
-            gpt_runner.loop(subjects_to_expand = list_of_subjects)
-
     
+    if job_type == "verify":
+        gpt_runner = GPTKBCRunner(curr_index=0, wikidata_entities_file_path = wikidata_entities_file_path, wikidata_triples_dir = wikidata_triples_dir, job_type = job_type)
+        list_of_subjects = gpt_runner.get_list_of_subjects()
+        gpt_runner.loop(subjects_to_expand = list_of_subjects)
+    
+    else:
+        for index, file_name in enumerate(os.listdir(template_path_dir), start = 1):
+            if file_name.endswith(".jinja"): 
+                file_path = os.path.join(template_path_dir, file_name)
+
+                prompter_parser_module = PromptJSONSchema(
+                    template_path_elicitation = file_path,
+                    gpt_model_elicitation = gpt_model_elicitation
+                )
+
+                gpt_runner = GPTKBCRunner(
+                    curr_index = index,
+                    wikidata_entities_file_path = wikidata_entities_file_path,
+                    wikidata_triples_dir = wikidata_triples_dir,
+                    prompter_parser_module = prompter_parser_module,
+                    job_type = job_type
+                )
+
+                list_of_subjects = gpt_runner.get_list_of_subjects()
+                gpt_runner.loop(subjects_to_expand = list_of_subjects)
+
 
 
 if __name__ == "__main__":

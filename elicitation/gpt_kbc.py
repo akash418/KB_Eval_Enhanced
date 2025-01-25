@@ -39,9 +39,6 @@ class GPTKBCRunner:
         """
 
         logger.info('Initialize the GPTKC Runner ..')
-
-        if prompter_parser_module is None:
-            raise ValueError("Prompter Parser module is not provided")
         
         self.openai_client = OpenAI()
         self.job_description = job_description
@@ -116,35 +113,6 @@ class GPTKBCRunner:
                     self.process_completed_batch_dir(batch_file_id, file_index)
             else:
                 logger.info("Batch is still being processed...")
-
-
-
-
-    # replaced by new method 
-    def check_batch_status(self):
-        """
-        Check the current batch status for job subimitted to openai
-
-        returns: True is the batch has been completed (write it to completed records), 
-        else False in any other intermediate status
-        """
-        status_in_progress = ["created", "validating", "in_progress", "finalizing", "parsing"]
-
-        if os.path.exists(self.in_progress_file_path):
-            with open(self.in_progress_file_path, "r") as f:
-                data = json.load(f)
-            
-            batch_file_id = data.get("batch_id", None)
-            openai_batch = self.openai_client.batches.retrieve(batch_file_id)
-            current_status = openai_batch.status
-            logger.info(f"Current status of the batch ..{current_status}")
-            if current_status == "completed":
-                #write the batch id to completed.json
-                with open(self.completed_file_path, "w") as f:
-                    f.write(json.dumps(batch_file_id) + "\n")
-                    return True
-            elif current_status in status_in_progress:
-                return False
 
 
     def process_completed_batch_dir(self, batch_id, csv_file_index):

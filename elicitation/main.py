@@ -26,7 +26,14 @@ def main(
     """
     
     if job_type == "verify":
-        gpt_runner = GPTKBCRunner(curr_index=0, wikidata_entities_file_path = wikidata_entities_file_path, wikidata_triples_dir = wikidata_triples_dir, job_type = job_type)
+        gpt_runner = GPTKBCRunner(
+            curr_index = 0, 
+            wikidata_entities_file_path = wikidata_entities_file_path, 
+            wikidata_triples_dir = wikidata_triples_dir, 
+            prompter_parser_module = None, 
+            job_type = job_type
+        )
+        
         list_of_subjects = gpt_runner.get_list_of_subjects()
         gpt_runner.loop(subjects_to_expand = list_of_subjects)
     

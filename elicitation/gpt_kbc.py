@@ -242,6 +242,9 @@ class GPTKBCRunner:
 
         logger.info(f"Found {len(raw_triples):,} raw triples in the batch results.")
 
+        if not os.path.exists(self.csv_dir_path):
+            os.makedirs(self.csv_dir_path)
+
         # Define the CSV filename
         csv_filename = os.path.join(self.csv_dir_path, f"wikidata_triples_{self.curr_index}.csv")
 
@@ -334,13 +337,13 @@ class GPTKBCRunner:
             batch_request.append(req)
 
         # Write batch request data to a temporary file
-        with open(self.batch_request_file_path, "w") as f:
+        with open(self.batch_record_file_path, "w") as f:
             for obj in batch_request:
                 f.write(json.dumps(obj) + "\n")
 
         # Upload the batch request file to OpenAI
         batch_input_file = self.openai_client.files.create(
-            file=open(self.batch_request_file_path, "rb"),
+            file=open(self.batch_record_file_path, "rb"),
             purpose="batch"
         )
         batch_input_file_id = batch_input_file.id

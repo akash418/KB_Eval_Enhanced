@@ -47,7 +47,7 @@ def main(
     """
 
     # Iterate through all files in template_path_dir
-    for index, file_name in enumerate(os.listdir(template_path_dir), start = 0):
+    for index, file_name in enumerate(os.listdir(template_path_dir), start = 1):
         if file_name.endswith(".jinja"): 
             file_path = os.path.join(template_path_dir, file_name)
 

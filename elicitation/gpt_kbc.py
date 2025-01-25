@@ -56,6 +56,7 @@ class GPTKBCRunner:
         self.batch_results_dir = os.getcwd() + "/results_dir/"
         self.batch_request_dir = os.getcwd() + "/batch_request/"
         self.csv_dir_path = wikidata_triples_dir
+        self.has_exited_verify = False
 
         #self.in_progress_file_path = os.getcwd() + "/in_progress.json"
         #self.completed_file_path = os.getcwd() + "/completed.json"
@@ -104,45 +105,52 @@ class GPTKBCRunner:
         logger.info('The loop has succesfully finished ...')
     """
     
+    def create_dir(self):
+        directory_list = [
+            self.completed_dir_path,
+            self.batch_results_dir,
+            self.batch_request_dir,
+            self.csv_dir_path,
+        ]
+
+        for directory in directory_list:
+            if not os.path.exists(directory):
+                os.makedirs(directory)
 
     def loop(self, subjects_to_expand):
         """
         Main loop to handle job submission or verification based on the job type.
         """
         logger.info("Starting the main loop ...")
+        self.create_dir()
 
         if self.job_type == "submit":
             logger.info("Job type is 'submit'. Submitting a new batch directly.")
             self.create_batch_dir(subjects_to_expand)
 
-            if os.path.exists(self.in_progress_dir_path) and os.path.getsize(self.in_progress_dir_path) > 0:
-                logger.info("In-progress file exists. Checking batch status...")
-
-                if self.check_batch_status_dir() == True:
-                    # Batch has completed, read the batch
-                    for file_name in os.listdir(self.completed_dir_path):
-                        completed_file_path = os.path.join(self.completed_dir_path, file_name)
-                        with open(completed_file_path, 'r') as f:
-                            data = json.load(f)
-                            batch_file_id = data.get('batch_id')
-
-                        self.process_completed_batch(batch_file_id)
-                else:
-                    logger.info("Batch is still being processed...")
-
-            elif not os.path.exists(self.in_progress_dir_path) and not os.path.exists(self.completed_dir_path):
-                logger.info("No in-progress or completed file found. Submitting a new batch...")
-                self.create_batch_dir(subjects_to_expand)
 
         elif self.job_type == "verify":
-            logger.info("Job type is 'verify'. Processing completed batches...")
-            for file_name in os.listdir(self.completed_dir_path):
-                completed_file_path = os.path.join(self.completed_dir_path, file_name)
-                with open(completed_file_path, 'r') as f:
-                    data = json.load(f)
-                    batch_file_id = data.get('batch_id')
 
-                self.process_completed_batch(batch_file_id)
+            if self.has_exited_verify:
+                logger.info("Exiting as this is a repeated 'verify' job call.")
+                return
+
+            logger.info("Job type is 'verify'. Processing completed batches...")
+
+            if self.check_batch_status_dir() == True:
+                # Batch has completed, read the batch
+                for file_name in os.listdir(self.completed_dir_path):
+                    completed_file_path = os.path.join(self.completed_dir_path, file_name)
+                    with open(completed_file_path, 'r') as f:
+                        data = json.load(f)
+                        batch_file_id = data.get('batch_id')
+
+                    self.process_completed_batch_dir(batch_file_id)
+                    self.has_exited_verify = True
+            else:
+                logger.info("Batch is still being processed...")
+
+
 
 
     # replaced by new method 

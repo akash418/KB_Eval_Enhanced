@@ -74,8 +74,11 @@ class GPTKBCRunner:
         all_values = [item for key, values in json_content.items() for item in values]
         random_entities = random.sample(all_values, 15)
 
-        # for now just sample 3 entities
-        return random_entities
+        # change it if you want to sample
+        # return random_entities
+
+
+        return all_values
     
     def create_dir(self):
         directory_list = [

@@ -27,6 +27,7 @@ def main(
     
     if job_type == "verify":
         gpt_runner = GPTKBCRunner(
+            source_file_name = "",
             curr_index = 0, 
             wikidata_entities_file_path = wikidata_entities_file_path, 
             wikidata_triples_dir = wikidata_triples_dir, 

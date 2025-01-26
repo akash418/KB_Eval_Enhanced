@@ -33,7 +33,7 @@ def main(
             prompter_parser_module = None, 
             job_type = job_type
         )
-        
+
         list_of_subjects = gpt_runner.get_list_of_subjects()
         gpt_runner.loop(subjects_to_expand = list_of_subjects)
     
@@ -48,6 +48,7 @@ def main(
                 )
 
                 gpt_runner = GPTKBCRunner(
+                    source_file_name = file_name,
                     curr_index = index,
                     wikidata_entities_file_path = wikidata_entities_file_path,
                     wikidata_triples_dir = wikidata_triples_dir,

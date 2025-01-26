@@ -24,8 +24,8 @@ def main(
         model_name (str): Name of the LLM that will be used for evaluation
         seed (str): Seed value that will be used to identify the snippet directory for storing web instances
         verification_method (str): Either wikidata or web
-        sample_size (int): Size of the random sample
-        metric (str): Precision or recall
+        sample_size (int): Size of the random sample. Select -1 if you dont want to sample
+        metric (str): Type precision or recall
         results_dir_path (str): Directory path for storing the eval results
     
     
@@ -85,10 +85,6 @@ def main(
             process_request.compute_precision_dir(ret_triples)
         else:
             process_request.compute_recall_dir(ret_triples)
-
-
-    
-
 
 
 

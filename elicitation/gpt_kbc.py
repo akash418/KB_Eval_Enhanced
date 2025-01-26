@@ -11,11 +11,13 @@ from openai import OpenAI
 from openai.types import Batch as OpenAIBatch
 from tqdm import tqdm
 from prompter_parser import AbstractPrompterParser
+from prompter_parser.exceptions import ParsingException
 import re
 
 class GPTKBCRunner:
     def __init__(
             self,
+            source_file_name: str,
             curr_index: int,                # current index needed while submitting the batch request 
             wikidata_entities_file_path:str,
             wikidata_triples_dir:str,  
@@ -28,6 +30,7 @@ class GPTKBCRunner:
         Main arguments for GPTKBC runner class
 
         Arguments:
+            source_file_name (str): Name of the jinja file based on which the elicitation is done and batch request is submitted
             curr_index (int): Index used for identifying the current prompt file
             wikidata_entities_file_path (str): File path for handpicked wikidata entities
             wikidata_triples_dir (str): Dir path for storing the elicited triples
@@ -45,6 +48,7 @@ class GPTKBCRunner:
         self.prompter_parser_module = prompter_parser_module
         self.job_type = job_type
         self.curr_index = curr_index
+        self.source_file_name = source_file_name
 
         self.tmp_folder = os.getcwd()
         self.wikidata_entities_file_path = wikidata_entities_file_path
@@ -54,6 +58,7 @@ class GPTKBCRunner:
         self.batch_results_dir = os.getcwd() + "/results_dir/"
         self.batch_request_dir = os.getcwd() + "/batch_request/"
         self.csv_dir_path = wikidata_triples_dir
+        self.jinja_file_mapping = os.getcwd() + '/jinja_index_mapping.txt'
 
         # file path used for storing temporary batch json objects until they are submitted
         self.batch_record_file_path = os.getcwd() + "/batch_records.jsonl"
@@ -144,7 +149,8 @@ class GPTKBCRunner:
             for line_number, line in enumerate(f, start=1):
                 try:
                     # Parse elicitation responses
-                    raw_triples_from_line = self.prompter_parser_module.parse_elicitation_response(line)
+                    raw_triples_from_line = self.parse_elicitation_response(line)
+
                     raw_triples.extend(raw_triples_from_line)
                 except json.JSONDecodeError:
                     logger.error(f"JSONDecodeError at line {line_number}: {line.strip()}")
@@ -163,6 +169,49 @@ class GPTKBCRunner:
         self.write_triples_to_csv(raw_triples, csv_filename)
         logger.info(f"Raw triples written to `{csv_filename}`.")
 
+    # This method has been modified from the one in Prompter Parser Class
+    def parse_elicitation_response(self, response: str) -> list[dict]:
+        response_object = json.loads(response.strip())
+
+        subject_name = response_object["custom_id"]
+        choice = response_object["response"]["body"]["choices"][0]
+
+        # check if the request was stopped correctly
+        finish_reason = choice["finish_reason"]
+
+        if finish_reason != "stop":
+            raise ParsingException(f"finish_reason={finish_reason}")
+
+        message = choice["message"]
+        # check if the request was refused
+        refusal = message["refusal"]
+        if refusal:
+            raise ParsingException(f"refusal={refusal}")
+
+        output_string = message["content"]
+        generated_json_object = json.loads(output_string)
+
+        # check if the response object contains the key "facts"
+        key = "facts"
+        if (type(generated_json_object) != dict
+                or key not in generated_json_object):
+            raise ParsingException(f"Key '{key}' not found in response")
+
+        # get the triples from the response object
+        # ignore if the triple is not in the correct format (no error)
+        raw_triples = []
+        for line_triple in generated_json_object[key]:
+            if ("subject" in line_triple
+                    and "predicate" in line_triple
+                    and "object" in line_triple):
+                line_triple["subject_name"] = subject_name
+                raw_triples.append(line_triple)
+            else:
+                logger.warning(
+                    f"Subject: {subject_name}. "
+                    f"Invalid triple format: {line_triple}")
+
+        return raw_triples
 
     
     def write_triples_to_csv(self, raw_triples, input_file_path):
@@ -243,6 +292,11 @@ class GPTKBCRunner:
         # Write batch ID to the in-progress file
         with open(in_progress_file_path, "w") as f:
             json.dump(data, f)
+        
+        with open(self.jinja_file_mapping, 'a') as f:
+            f.write(f"{self.source_file_name} {self.curr_index}\n")
+        
+        logger.info(f"Data processed from jinja file name ... {self.source_file_name}")
 
         logger.info(f"Batch ID recorded at {in_progress_file_path}")
 
@@ -260,6 +314,7 @@ class GPTKBCRunner:
 
         # Ensure the in-progress directory exists
         if os.path.exists(self.in_progress_dir_path):
+
             # Iterate over all files in the in-progress directory
             for file_name in os.listdir(self.in_progress_dir_path):
                 if file_name.endswith(".json") and file_name.startswith("in_progress_"):

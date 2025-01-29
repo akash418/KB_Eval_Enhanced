@@ -227,15 +227,6 @@ class ProcessRequest:
             # Aggregate results for the current file
             total_triples = len(triples_list)
 
-            """
-            data_to_csv = [{
-                "True": len(results['a']) / total_triples,
-                "Plausible": len(results['b']) / total_triples,
-                "Implausible": len(results['c']) / total_triples,
-                "False": len(results['d']) / total_triples,
-                "Total #Triples": total_triples,
-            }]
-            """
 
             results_dict = {
                 "True": len(results['a']) / total_triples,
@@ -244,15 +235,11 @@ class ProcessRequest:
                 "False": len(results['d']) / total_triples,
                 "Total #Triples": total_triples,
                 "Metric": "Precision",
-                "Source Elicited File": str(filename)
+                "Source Elicited File": str(filename),
+                "Source Prompt File": self.read_parse_jinja_file(filename)
             }
 
             self.aggregated_data.append(results_dict)
-
-            # Construct the output file path
-            #output_filename = os.path.join(self.results_dir_path, f"{filename}_precision_results.csv")
-            #self.write_to_csv(output_filename, data_to_csv)
-            #print(f"Results saved to {output_filename}")
 
 
     def subject_based_lookup(self, current_subject, data_triples):
@@ -329,7 +316,8 @@ class ProcessRequest:
 
     def write_to_csv(self, filename, data):
 
-        headers = ['True', 'Plausible', 'Implausible', 'False', 'Total #Triples']
+        headers = ['True', 'Plausible', 'Implausible', 'False', 'Total #Triples', "Metric", "Source Elicited File", "Source Prompt File"]
+
 
         with open(filename, mode = 'w', newline = "") as file:
             writer = csv.DictWriter(file, fieldnames = headers)
@@ -337,6 +325,21 @@ class ProcessRequest:
             for row in data:
                 writer.writerow(row)
         
+    def read_parse_jinja_file(self, elicited_csv_file):
+        """
+        Read jinja mapping file and return source prompt file name
+        """
+
+        jinja_file_mapping = os.path.abspath(os.path.join(os.getcwd(), "..", "jinja_index_mapping.txt"))
+        mapping_dict = dict()
+        with open(jinja_file_mapping, "r") as file:
+            for line in file:
+                parts = line.strip().split(" ", 1)
+                if len(parts) == 2:  
+                    source_file, mapped_value = parts
+                    mapping_dict[source_file] = mapped_value
+        
+        return mapping_dict[elicited_csv_file]
 
 
     def compute_recall_dir(self, raw_triples):
@@ -388,6 +391,7 @@ class ProcessRequest:
                 output = request.verify_triple_lm_wikidata(each_triple_str, subject_based_facts_str)
                 results = self.parse_lm_output(each_triple_str, results, output)
 
+            """
             print("Recall results ....")
             print("Total # triples", len(all_wikidata_facts))
             print("Fraction of triples true", len(results['a']) / len(all_wikidata_facts))
@@ -395,16 +399,6 @@ class ProcessRequest:
             print("Fraction of triples implausible", len(results['c']) / len(all_wikidata_facts))
             print("Fraction of triples false", len(results['d']) / len(all_wikidata_facts))
             print(results)
-
-            # Aggregate results for the current file
-            """"
-            data_to_csv = [{
-                "True": len(results['a']) / len(all_wikidata_facts),
-                "Plausible": len(results['b']) / len(all_wikidata_facts),
-                "Implausible": len(results['c']) / len(all_wikidata_facts),
-                "False": len(results['d']) / len(all_wikidata_facts),
-                "Total #Triples": len(all_wikidata_facts),
-            }]
             """
 
             results_dict = {
@@ -414,15 +408,11 @@ class ProcessRequest:
                 "False": len(results['d']) / len(all_wikidata_facts),
                 "Total #Triples": len(all_wikidata_facts),
                 "Metric": "Recall",
-                "Source Elicited File": str(filename)
+                "Source Elicited File": str(filename),
+                "Source Prompt File": self.read_parse_jinja_file(filename)
             }
 
             self.aggregated_data.append(results_dict)
-
-            # Construct the output file path
-            #output_filename = os.path.join(self.results_dir_path, f"{filename}_recall_results.csv")
-            #self.write_to_csv(output_filename, data_to_csv)
-            #print(f"Results saved to {output_filename}")
 
 
         

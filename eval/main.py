@@ -32,6 +32,7 @@ def main(
     """
     # path where all wikidata parsed facts will be stored for each entity
     gold_triple_file_path = os.getcwd() + "/gold.json"
+    
 
     # basic sanity check to make sure all entities exist on wikidata
     with open(wikidata_entities_file_path, 'r') as file:

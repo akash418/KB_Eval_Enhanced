@@ -58,7 +58,9 @@ class GPTKBCRunner:
         self.batch_results_dir = os.getcwd() + "/results_dir/"
         self.batch_request_dir = os.getcwd() + "/batch_request/"
         self.csv_dir_path = wikidata_triples_dir
-        self.jinja_file_mapping = os.getcwd() + '/jinja_index_mapping.txt'
+
+        self.jinja_file_mapping = os.path.abspath(os.path.join(os.getcwd(), "..", "jinja_index_mapping.txt"))
+        #self.jinja_file_mapping = os.getcwd() + '/jinja_index_mapping.txt'
 
         # file path used for storing temporary batch json objects until they are submitted
         self.batch_record_file_path = os.getcwd() + "/batch_records.jsonl"
@@ -297,7 +299,7 @@ class GPTKBCRunner:
             json.dump(data, f)
         
         with open(self.jinja_file_mapping, 'a') as f:
-            f.write(f"{self.source_file_name} {self.curr_index}\n")
+            f.write(f"{self.source_file_name} wikidata_triples_{self.curr_index}\n")
         
         logger.info(f"Data processed from jinja file name ... {self.source_file_name}")
 

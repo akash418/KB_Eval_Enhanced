@@ -86,6 +86,9 @@ def main(
         else:
             process_request.compute_recall_dir(ret_triples)
 
+        output_filename = os.path.join(results_dir_path, f"results.csv")    
+        process_request.write_to_csv(output_filename, process_request.aggregated_data)
+
 
 
 if __name__ == "__main__":

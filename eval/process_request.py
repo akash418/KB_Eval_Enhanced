@@ -30,7 +30,7 @@ class ProcessRequest:
         # directory to store the snippets downloaded from the search query
         self.snippet_dir = os.getcwd() + "snippets/"
         self.wikidata_triples_dir = wikidata_triples_dir
-        self.wikidata_entities_file_path = wikidata_entities_file_path#
+        self.wikidata_entities_file_path = wikidata_entities_file_path
 
         # file location that stores the gold triples from wikidata
         self.gold_triples_file_path = os.getcwd() + "/gold.json"
@@ -41,6 +41,7 @@ class ProcessRequest:
         self.sampling = True if sample_size > -1 else False
         self.sample_size = sample_size
         self.results_dir_path = results_dir_path
+        self.aggregated_data = []
 
 
     def verify_triples(self, raw_triples):
@@ -225,6 +226,8 @@ class ProcessRequest:
 
             # Aggregate results for the current file
             total_triples = len(triples_list)
+
+            """
             data_to_csv = [{
                 "True": len(results['a']) / total_triples,
                 "Plausible": len(results['b']) / total_triples,
@@ -232,12 +235,24 @@ class ProcessRequest:
                 "False": len(results['d']) / total_triples,
                 "Total #Triples": total_triples,
             }]
+            """
+
+            results_dict = {
+                "True": len(results['a']) / total_triples,
+                "Plausible": len(results['b']) / total_triples,
+                "Implausible": len(results['c']) / total_triples,
+                "False": len(results['d']) / total_triples,
+                "Total #Triples": total_triples,
+                "Metric": "Precision",
+                "Source Elicited File": str(filename)
+            }
+
+            self.aggregated_data.append(results_dict)
 
             # Construct the output file path
-            output_filename = os.path.join(self.results_dir_path, f"{filename}_precision_results.csv")
-            self.write_to_csv(output_filename, data_to_csv)
-
-            print(f"Results saved to {output_filename}")
+            #output_filename = os.path.join(self.results_dir_path, f"{filename}_precision_results.csv")
+            #self.write_to_csv(output_filename, data_to_csv)
+            #print(f"Results saved to {output_filename}")
 
 
     def subject_based_lookup(self, current_subject, data_triples):
@@ -382,6 +397,7 @@ class ProcessRequest:
             print(results)
 
             # Aggregate results for the current file
+            """"
             data_to_csv = [{
                 "True": len(results['a']) / len(all_wikidata_facts),
                 "Plausible": len(results['b']) / len(all_wikidata_facts),
@@ -389,12 +405,24 @@ class ProcessRequest:
                 "False": len(results['d']) / len(all_wikidata_facts),
                 "Total #Triples": len(all_wikidata_facts),
             }]
+            """
+
+            results_dict = {
+                "True": len(results['a']) / len(all_wikidata_facts),
+                "Plausible": len(results['b']) / len(all_wikidata_facts),
+                "Implausible": len(results['c']) / len(all_wikidata_facts),
+                "False": len(results['d']) / len(all_wikidata_facts),
+                "Total #Triples": len(all_wikidata_facts),
+                "Metric": "Recall",
+                "Source Elicited File": str(filename)
+            }
+
+            self.aggregated_data.append(results_dict)
 
             # Construct the output file path
-            output_filename = os.path.join(self.results_dir_path, f"{filename}_recall_results.csv")
-            self.write_to_csv(output_filename, data_to_csv)
-
-            print(f"Results saved to {output_filename}")
+            #output_filename = os.path.join(self.results_dir_path, f"{filename}_recall_results.csv")
+            #self.write_to_csv(output_filename, data_to_csv)
+            #print(f"Results saved to {output_filename}")
 
 
         

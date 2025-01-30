@@ -337,7 +337,8 @@ class ProcessRequest:
                 parts = line.strip().split(" ", 1)
                 if len(parts) == 2:  
                     source_file, mapped_value = parts
-                    mapping_dict[source_file] = mapped_value
+                    #mapping_dict[source_file] = mapped_value
+                    mapping_dict[mapped_value] = source_file
         
         return mapping_dict[elicited_csv_file]
 

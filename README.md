@@ -71,13 +71,11 @@ python main.py \
 
 ```
 
-This command will submit batch jobs. It will create all the necessary directories, along with a file named ```jinja_index_mapping.txt```that records mappings from jinja used as prompts to indexes for producing csv during elicitation. 
-
-For eg if directory ```templates/prompts```contains two prompt files, ```prompt_a.json.jinja``` and ```prompt_b.json_jinja```, then appropriating index will be assigned where first file will be index 1 and second one will be index 2.
+This command will submit batch jobs. It will create all the necessary directories, along with necessary files. 
 
 Note: Please wait for time of approx 2 hrs (standard waiting time for completing the batch jobs)
 
-Run this command to produce the elicited triples for all the prompts 
+Run this command to produce the elicited triples in the csv format for all the prompts 
 ````
 python main.py \
 --template_path_dir templates/prompts/ \
@@ -88,7 +86,7 @@ python main.py \
 
 ````
 
-It will save the parsed triples in the directory specified. Files will be named as ```wikidata_triples_<unique_index>.csv```
+It will save the parsed triples in the directory specified through CLI argument ```wikidata_triples_dir```. Files will be named as ```wikidata_triples_<unique_index>.csv```
 
 
 
@@ -152,7 +150,9 @@ python python main.py --model_name "gpt-4o-mini" \
 
 ```
 
-Running this command will save the output as csv with naming convention ``` wikidata_triples_<unique_index>_<precision/recall>_results.csv``` in the directory specified as CLI argument ```results_dir_path```. The contents of one results CSV file looks like this.
-|True|Plausible|Implausible|False|Total \#Triples|
-|---|---|---|---|---|
-|0\.4864864864864865|0\.13513513513513514|0\.2972972972972973|0\.08108108108108109|37|
+Running this command will save the output as a csv in the directory specified in the CLI argument ```results_dir_path```. The contents of the CSV look like:
+
+|True|Plausible|Implausible|False|Total \#Triples|Metric|Source Elicited File|Source Prompt File|
+|---|---|---|---|---|---|---|---|
+|0\.5|0\.025|0\.425|0\.05|40|Recall|wikidata\_triples\_2|prompt2\.json\.jinja|
+|0\.4|0\.025|0\.525|0\.05|40|Recall|wikidata\_triples\_3|prompt3\.json\.jinja|
